@@ -34,23 +34,23 @@ class CamPoseDetector:
 
         return img_re,new_cam_mtx
 
-    def get_camera_pose(self,fname,tag_size,verbose=False):
+    def get_camera_pose(self,img,tag_size,verbose=False):
         # inputs
-        # -- fname: name of image file containing AprilTag
+        # -- img: image containing Apriltag
         # -- tag_size: tag size in meter, must not be None
         # -- verbose: print all detection parameters if True
         # outputs
         # -- cam_pose: list of camera pose in tag frame for all tags detected
-        assert isinstance(fname,str)
+        assert isinstance(img,np.ndarray)
         assert isinstance(tag_size,int) or isinstance(tag_size,float)
 
-        img = cv2.imread(fname)
         # check image shape and pixel value range
         assert len(img.shape) == 2 or len(img.shape) == 3
         assert np.amax(img)<=255 and np.amin(img)>=0
         # undistort camera image and convert it to grayscale
         # required for apriltag detection
         img_re,new_cam_mtx = self.run_undistortion(img)
+        # img_re,new_cam_mtx = img, self.cam_matrix
         gray_img = cv2.cvtColor(img_re,cv2.COLOR_BGR2GRAY)
 
         # apriltag detection and pose estimation
