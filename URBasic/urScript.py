@@ -26,7 +26,7 @@ __author__ = "Martin Huus Bjerge"
 __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
-from utils import URBasic
+import URBasic
 import numpy as np
 import time
 
@@ -59,10 +59,10 @@ class UrScript(object):
         '''
         Constructor see class description for more info.
         '''
-        logger = utils.URBasic.dataLogging.DataLogging()
+        logger = URBasic.dataLogging.DataLogging()
         name = logger.AddEventLogging(__name__)
         self.__logger = logger.__dict__[name]
-        self.robotConnector = utils.URBasic.robotConnector.RobotConnector(robotModel, host, hasForceTorque, conf_filename=conf_filename)
+        self.robotConnector = URBasic.robotConnector.RobotConnector(robotModel, host, hasForceTorque, conf_filename=conf_filename)
         #time.sleep(200)
         while(self.robotConnector.RobotModel.ActualTCPPose() is None):      ## check paa om vi er startet
             print("waiting for everything to be ready")

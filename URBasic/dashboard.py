@@ -26,6 +26,7 @@ __author__ = "Martin Huus Bjerge"
 __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
+import URBasic
 import threading
 import socket
 import struct
@@ -68,10 +69,10 @@ class DashBoard(threading.Thread):
         Constructor see class description for more info.
         '''
         if(False):
-            assert isinstance(robotModel, utils.URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
+            assert isinstance(robotModel, URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
         self.__robotModel = robotModel
 
-        logger = utils.URBasic.dataLogging.DataLogging()
+        logger = URBasic.dataLogging.DataLogging()
         name = logger.AddEventLogging(__name__)        
         self._logger = logger.__dict__[name]
         self.__reconnectTimeout = 60 #Seconds (while in run)

@@ -25,10 +25,12 @@ __author__ = "Martin Huus Bjerge"
 __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
+import URBasic
 import numpy as np
+import time
 
 
-class UrScriptExt(utils.URBasic.urScript.UrScript):
+class UrScriptExt(URBasic.urScript.UrScript):
     '''
     Interface to remote access UR script commands, and add some extended features as well.
     For more details see the script manual at this site:
@@ -59,7 +61,7 @@ class UrScriptExt(utils.URBasic.urScript.UrScript):
         if host is None:  # Only for enable code completion
             return
         super(UrScriptExt, self).__init__(host, robotModel, hasForceTorque, conf_filename)
-        logger = utils.URBasic.dataLogging.DataLogging()
+        logger = URBasic.dataLogging.DataLogging()
         name = logger.AddEventLogging(__name__, log2Consol=False)
         self.__logger = logger.__dict__[name]
         self.print_actual_tcp_pose()

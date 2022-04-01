@@ -25,6 +25,7 @@ __author__ = "Martin Huus Bjerge"
 __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
+import URBasic
 
 class RobotModel(object):
     '''
@@ -39,7 +40,7 @@ class RobotModel(object):
         '''
         Constructor see class description for more info.
         '''
-        logger = utils.URBasic.dataLogging.DataLogging(path=log_path, config=log_config_path)
+        logger = URBasic.dataLogging.DataLogging(path=log_path, config=log_config_path)
         name = logger.AddEventLogging(__name__)
         self.__logger = logger.__dict__[name]
         self.__logger.info('Init done')

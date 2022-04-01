@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
 import threading
+import URBasic
 import numpy as np
 import time
 import xml.etree.ElementTree as ET
@@ -38,10 +39,10 @@ class DataLog(threading.Thread):
     def __init__(self, robotModel):
 
         if(False):
-            assert isinstance(robotModel, utils.URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
+            assert isinstance(robotModel, URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
         self.__robotModel = robotModel
         threading.Thread.__init__(self)
-        logger = utils.URBasic.dataLogging.DataLogging()
+        logger = URBasic.dataLogging.DataLogging()
         name = logger.AddDataLogging(__name__)
         self.__dataLogger = logger.__dict__[name]
         name = logger.AddEventLogging(__name__,log2Consol=False)

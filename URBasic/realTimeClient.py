@@ -25,7 +25,7 @@ __author__ = "Martin Huus Bjerge"
 __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
-from utils import URBasic
+import URBasic
 import socket
 import threading
 import select
@@ -70,11 +70,11 @@ class RealTimeClient(object):
         Constructor see class description for more info.
         '''
         if(False):
-            assert isinstance(robotModel, utils.URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
+            assert isinstance(robotModel, URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
         self.__robotModel = robotModel
 
-        logger = utils.URBasic.dataLogging.DataLogging()
-        name = logger.AddEventLogging(__name__, log2Consol=False, level = URBasic.logging.WARNING)
+        logger = URBasic.dataLogging.DataLogging()
+        name = logger.AddEventLogging(__name__, log2Consol=False,level = URBasic.logging.WARNING)
         self.__logger = logger.__dict__[name]
         self.__robotModel.rtcConnectionState = ConnectionState.DISCONNECTED
         self.__reconnectTimeout = 60
