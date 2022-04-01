@@ -1,11 +1,10 @@
-from CamPoseDetector import CamPoseDetector
-from TagList import TagList
-from pose_conversion import transformation_to_pose,pose_to_transformation,eulerAnglesToRotationMatrix,rotationMatrixToEulerAngles
+from utils.apriltag_utils.CamPoseDetector import CamPoseDetector
+from utils.apriltag_utils.TagList import TagList
+from utils.apriltag_utils.pose_conversion import pose_to_transformation, rotationMatrixToEulerAngles
 import math
 import numpy as np
 import pickle
 import cv2
-import pupil_apriltags
 import pandas as pd
 import os
 from tabulate import tabulate
