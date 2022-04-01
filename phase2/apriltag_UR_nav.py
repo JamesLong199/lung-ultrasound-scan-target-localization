@@ -2,7 +2,6 @@ import time
 import math3d as m3d
 import pickle
 
-from scipy.spatial.transform import Rotation as R
 from utils.apriltag_utils.TagDetector import TagDetector
 from utils.pose_conversion import *
 from utils.apriltag_utils.annotate_tag import *
@@ -39,19 +38,18 @@ time.sleep(0.2)
 
 def compute_tag_pose(result):
     """
-        Compute tag pose in the base frame, given camera's TCP pose
-        Essentially two conversion processes of the tag pose:
-            tag frame --> TCP frame --> base frame
-        Then adjust the tag pose by checking limits
-        - Naming convention: (object)_R/T/pos/angle_(frame)
-
-        Input:
-        - result: one AprilTag detection result
-        - tilt: the tilt angle of wrist 1 of UR
-        Output:
-        - return the tag pose in the base frame
+    Compute tag pose in the base frame through coordinate conversion algorithm:
+    tag frame --> cam frame --> tcp frame --> base frame
+    :param result: one AprilTag detection result
+    :return: tag pose in the base frame
     """
-    print("############################################")
+    R_tag_cam = result.pose_R
+    t_tag_cam = (result.pose_t).reshape(3, )
+
+    # returns the 6d TCP/tool pose in the base frame
+    TCP_6d_pose_base = robot.get_actual_tcp_pose()
+    # use math3d to convert (x,y,z,rx,rx,rz) to (R,t)
+    TCP_pose_base = np.asarray(m3d.Transform(TCP_6d_pose_base).get_matrix())  # 4x4 matrix
 
     # transformation from tag frame to camera frame
     T_tag_cam = np.zeros((4,4))  # capital T means transformation
@@ -118,7 +116,6 @@ try:
             show_frame(undistorted_img)
             tag_pose = compute_tag_pose(result)
             robot.movej(pose=tag_pose, a=ACCELERATION, v=VELOCITY)
-
             robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
 
         time.sleep(0.5)
