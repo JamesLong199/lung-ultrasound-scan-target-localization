@@ -22,6 +22,6 @@ if __name__ == '__main__':
     print('cameraMatrix:\n',cameraMatrix)
     print('distCoeffs:\n',distCoeffs)
 
-    with open('cam_params.pickle','wb') as f:
+    with open('cam_params.pickle', 'wb') as f:
         pickle.dump([cameraMatrix,distCoeffs],f)
         
