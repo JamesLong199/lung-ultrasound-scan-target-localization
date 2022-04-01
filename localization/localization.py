@@ -40,20 +40,21 @@ def localize_camera(fname,cam_matrix,dist_coeffs,tag_list):
     angles = []
 
     for det in det_list:
-        cam_R = det.pose_R
-        cam_t = (det.pose_t).reshape(3,)
+        # transformation from tag frame to camera frame
+        R_tag_cam = det.pose_R
+        t_tag_cam = (det.pose_t).reshape(3,)
         # camera position in tag frame
-        cam_pos_tag = cam_R.T @ (-cam_t)
+        cam_pos_tag = R_tag_cam.T @ (-t_tag_cam)
 
-        tag_pose = tag_list.get_tag_pose(det.tag_family.decode('utf-8'),det.tag_id)
-        tag_R,tag_t = pose_to_transformation(tag_pose)
+        tag_pose_world = tag_list.get_tag_pose(det.tag_family.decode('utf-8'),det.tag_id)
+        R_tag_world,t_tag_world = pose_to_transformation(tag_pose_world)
 
         # camera global position
-        cam_pos_global = tag_R @ cam_pos_tag + tag_t
+        cam_pos_global = R_tag_world @ cam_pos_tag + t_tag_world
 
         # camera global angles
-        total_R = cam_R @ tag_R
-        camera_angles_global = rotationMatrixToEulerAngles(total_R) * 180 / math.pi
+        R_cam_world = R_tag_world @ R_tag_cam.T
+        camera_angles_global = rotationMatrixToEulerAngles(R_cam_world) * 180 / math.pi
 
         pos.append(cam_pos_global)
         angles.append(camera_angles_global)
