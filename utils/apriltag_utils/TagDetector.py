@@ -17,7 +17,7 @@ class TagDetector:
         assert cam_matrix.shape == (3, 3)
         if dist_coeffs is not None:
             # (1,5) for regular camera, (1,4) for fisheye camera
-            assert dist_coeffs.shape == (1, 5) or dist_coeffs.shape == (1, 4)
+            assert dist_coeffs.size == 5 or dist_coeffs.size == 4
             self.dist_coeffs = dist_coeffs
         assert isinstance(tag_family, str)
         assert isinstance(cam_type, str)
