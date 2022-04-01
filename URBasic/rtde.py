@@ -26,6 +26,7 @@ __copyright__ = "Copyright 2017, Rope Robotics ApS, Denmark"
 __license__ = "MIT License"
 
 from pkg_resources import resource_filename
+import URBasic
 import threading
 import socket
 import struct
@@ -79,10 +80,10 @@ class RTDE(threading.Thread): #, metaclass=Singleton
         Constructor see class description for more info.
         '''
         if(False):
-            assert isinstance(robotModel, utils.URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
+            assert isinstance(robotModel, URBasic.robotModel.RobotModel)  ### This line is to get code completion for RobotModel
         self.__robotModel = robotModel
 
-        logger = utils.URBasic.dataLogging.DataLogging()
+        logger = URBasic.dataLogging.DataLogging()
         name = logger.AddEventLogging(__name__,log2Consol=False)
         self._logger = logger.__dict__[name]
         self.__reconnectTimeout = 600 #Seconds (while in run)

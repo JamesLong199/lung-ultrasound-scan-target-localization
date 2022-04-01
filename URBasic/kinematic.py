@@ -29,7 +29,9 @@ import ikpy as ik
 import numpy as np
 import sympy as sp
 import math
+import scipy
 from scipy import linalg
+from URBasic.manipulation import *
 
 pi = np.pi
 

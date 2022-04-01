@@ -31,7 +31,7 @@ import logging
 import time
 import os
 import re
-from utils import URBasic
+import URBasic
 import xml.etree.ElementTree as ET
 import ast
 from six import with_metaclass
