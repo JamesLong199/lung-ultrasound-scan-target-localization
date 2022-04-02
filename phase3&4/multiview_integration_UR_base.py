@@ -1,12 +1,12 @@
 # Manipulate UR3e to move in a designated circular path to scan and
-# take pictures of the mannequin to reconstruct its surface with AprilTag
+# take pictures of the mannequin to reconstruct its surface using UR's base
 # change the transformation matrix of the first camera to be identity
+# use the manually measured camera offset in TCP frame
 
 import pyrealsense2 as rs
 import URBasic
 import time
-from utils.apriltag_utils.TagDetector import TagDetector
-from utils.pose_conversion import *
+from scipy.spatial.transform import Rotation as R
 from utils.apriltag_utils.annotate_tag import *
 
 # UR Configuration
@@ -14,6 +14,7 @@ from utils.apriltag_utils.annotate_tag import *
 ROBOT_IP = '169.254.147.11'  # real robot IP
 ACCELERATION = 0.5  # robot acceleration
 VELOCITY = 0.5  # robot speed value
+
 
 robot_start_position = (np.radians(-339.5), np.radians(-110.55), np.radians(-34.35),
                         np.radians(-125.05), np.radians(89.56), np.radians(291.04))  # joint
@@ -45,6 +46,14 @@ robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
 
 robot.init_realtime_control()  # starts the realtime control loop on the Universal-Robot Controller
 time.sleep(1)  # just a short wait to make sure everything is initialised
+
+# manually measured camera offset in TCP frame
+cam_t_tcp = np.array([-0.041, -0.002, 0.02])
+cam_R_tcp = np.array([
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1]
+])
 
 
 # Depth Camera Configuration
@@ -82,24 +91,7 @@ else:
 # Start streaming
 pipeline.start(config)
 
-# get camera intrinsic parameters
-profile = pipeline.get_active_profile()
-depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.depth))
-depth_intrinsics = depth_profile.get_intrinsics()
-intr = np.array([[depth_intrinsics.fx, 0, depth_intrinsics.ppx],
-                 [0, depth_intrinsics.fy, depth_intrinsics.ppy],
-                 [0, 0, 1]])
-
-
-# AprilTag detector configuration
-tag_size = 0.048
-tag_family = 'tagStandard41h12'
-cam_type = "standard"
-tagDetector = TagDetector(intr, None, tag_family, cam_type)
-
-print("AprilTag detector prepared!")
-
-time.sleep(1)
+time.sleep(0.5)
 
 
 def show_frame(frame):
@@ -126,21 +118,16 @@ def write_to_file(i, rot_mat, translation):
 
 
 #### Start circling:
-cam1_R_tag, cam2_R_tag = None, None
-cam1_t_tag, cam2_t_tag = None, None
+cam1_R_base, cam2_R_base = None, None
+cam1_t_base, cam2_t_base = None, None
 
 # make the first camera view identity transformation
 write_to_file(0, np.eye(3), np.array([0, 0, 0]))
 
-# compute the relative transformation with multiple AprilTags and average the results
-cam1_R_tag_list = []
-cam2_R_tag_list = []
-cam1_t_tag_list = []
-cam2_t_tag_list = []
 try:
     for i, pose in enumerate(all_poses):
         robot.movej(pose=pose, a=ACCELERATION, v=VELOCITY)
-        time.sleep(2)
+        time.sleep(1)
         # take pictures:
 
         # Wait for a coherent pair of frames: depth and color
@@ -153,61 +140,28 @@ try:
         # Convert images to numpy arrays
         depth_image = np.asanyarray(depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
+        show_frame(color_image)
 
         cv.imwrite('RGBD/color/{}.jpg'.format(i), color_image)
         cv.imwrite('RGBD/depth/{}.png'.format(i), depth_image)
 
-        # Locate camera with AprilTag
-        _, detection_results = tagDetector.detect_tags(color_image, tag_size)
-        show_frame(color_image)
+        # compute extrinsic parameters in the base frame and update the odometry.log file
+        tcp_t_base = np.array(pose[:3])
+        tcp_R_base = R.from_rotvec(pose[3:]).as_matrix()
 
-        curr_cam_R_tag_list = []
-        curr_cam_pos_tag_list = []
-        print("Number of tags detected: ", len(detection_results))
-        if len(detection_results) != 0:
-            for result in detection_results:
-                annotate_tag(result, color_image)
-                show_frame(color_image)
-
-                if i == 0:
-                    tag_R_cam = result.pose_R
-                    tag_t_cam = result.pose_t
-                    tag_pos_cam = tag_R_cam @ tag_t_cam
-                    # print("tag_R_cam: \n", tag_R_cam)
-                    # print("tag_t_cam: \n", tag_t_cam)
-                    # print("tag_pos_cam: \n", tag_pos_cam)
-
-                curr_cam_R_tag = result.pose_R.T  # camera rotation in tag frame
-                curr_cam_t_tag = -1 * result.pose_t  # camera translation in tag frame
-                curr_cam_pos_tag = curr_cam_R_tag @ curr_cam_t_tag  # camera position in tag frame
-
-                curr_cam_R_tag_list.append(curr_cam_R_tag)
-                curr_cam_pos_tag_list.append(curr_cam_pos_tag)
-        else:
-            print("No Tag detected")
+        cam_t_base = tcp_R_base @ cam_t_tcp + tcp_t_base
+        cam_R_base = tcp_R_base @ cam_R_tcp
 
         if i == 0:
-            cam1_R_tag_list = curr_cam_R_tag_list
-            cam1_t_tag_list = curr_cam_pos_tag_list
+            cam1_R_base = cam_R_base
+            cam1_t_base = cam_t_base
         elif i == 1:
-            cam2_R_tag_list = curr_cam_R_tag_list
-            cam2_t_tag_list = curr_cam_pos_tag_list
+            cam2_R_base = cam_R_base
+            cam2_t_base = cam_t_base
 
-    # compute the average translation and rotation of three AprilTag results
-    avg_trans = np.zeros(3)
-    avg_ang = np.zeros(3)
-    for (cam1_R_tag, cam1_t_tag, cam2_R_tag, cam2_t_tag) in zip(cam1_R_tag_list, cam1_t_tag_list, cam2_R_tag_list,
-                                                                cam2_t_tag_list):
-        rot_mat = cam1_R_tag.T @ cam2_R_tag  # relative rotation
-        translation = cam1_R_tag.T @ (cam2_t_tag - cam1_t_tag)  # relative translation
-
-        avg_ang += rotationMatrixToEulerAngles(rot_mat)
-        avg_trans += translation.squeeze()
-
-    avg_ang /= len(cam1_R_tag_list)
-    avg_rot = eulerAnglesToRotationMatrix(avg_ang)
-    avg_trans /= len(cam1_R_tag_list)
-    write_to_file(1, avg_rot, avg_trans)
+    relative_R = cam1_R_base.T @ cam2_R_base  # relative rotation
+    relative_t = cam1_R_base.T @ (cam2_t_base - cam1_t_base)  # relative translation
+    write_to_file(1, relative_R, relative_t)
 
 finally:
     # Stop streaming

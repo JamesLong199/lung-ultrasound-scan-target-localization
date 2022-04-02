@@ -10,7 +10,7 @@ class TagDetector:
         """
         Constructor for a TagDetector object
         :param cam_matrix: camera intrinsic matrix
-        :param tag_fam: tag family
+        :param tag_family: tag family
         :param cam_type: the camera type: "standard" or "fisheye"
         :param dist_coeffs: distortion coefficients of camera, could be None
         """
@@ -18,7 +18,7 @@ class TagDetector:
         if dist_coeffs is not None:
             # (1,5) for regular camera, (1,4) for fisheye camera
             assert dist_coeffs.size == 5 or dist_coeffs.size == 4
-            self.dist_coeffs = dist_coeffs
+        self.dist_coeffs = dist_coeffs
         assert isinstance(tag_family, str)
         assert isinstance(cam_type, str)
 
