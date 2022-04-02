@@ -107,7 +107,7 @@ try:
     print("starting loop")
     while True:
         frame = vs.read()
-        undistorted_img, detection_results = tagDetector.detect_tags( frame, tag_size)
+        undistorted_img, detection_results = tagDetector.detect_tags(frame, tag_size)
         # print('undistorted_img:\n',undistorted_img)
         show_frame(undistorted_img)
         if len(detection_results) != 0:

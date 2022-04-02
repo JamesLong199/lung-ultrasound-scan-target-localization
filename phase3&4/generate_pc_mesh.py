@@ -68,7 +68,7 @@ for i in range(len(camera_poses)):
     volume.integrate(rgbd,
                      o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault),
                      np.linalg.inv(camera_poses[i].pose))
-    break
+    # break
 
 
 # mesh generation:
@@ -92,12 +92,12 @@ pcd = volume.extract_point_cloud()
 o3d.io.write_point_cloud("ply/TSDF_volume_pc.pcd", pcd)  # save the point cloud as a pcd file
 
 # print("Downsample the point cloud with a voxel of 0.05")
-downpcd = pcd.voxel_down_sample(voxel_size=0.01)
-# o3d.visualization.draw_geometries([downpcd])
+downpcd = pcd.voxel_down_sample(voxel_size=0.005)
+o3d.visualization.draw_geometries([downpcd])
 
-print("Recompute the normal of the downsampled point cloud")
-downpcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-o3d.visualization.draw_geometries([downpcd], point_show_normal=True)
+# print("Recompute the normal of the downsampled point cloud")
+# downpcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+# o3d.visualization.draw_geometries([downpcd], point_show_normal=True)
 
 
 # o3d.visualization.draw_geometries([pc],
