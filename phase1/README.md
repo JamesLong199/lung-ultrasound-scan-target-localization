@@ -1,10 +1,10 @@
-Phase 1: Camera Calibration and Camera Localization with Apriltag
+# Phase 1: Camera Calibration and Camera Localization with Apriltag
 
-Camera Calibration
+# Camera Calibration
 - Standard camera calibration procedure for webcam
 - Details included in calibration.ipynb
 
-Camera Localization with Apriltag
+# Camera Localization with Apriltag
 - Test the accuracy and precision of Apriltag detection
 - Procedure
   - Select a global coordinate system
