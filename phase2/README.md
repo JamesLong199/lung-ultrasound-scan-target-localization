@@ -1,3 +1,6 @@
+# Phase 2: Robot Arm Navigation With Apriltag
+
+
 # Functionality
 - Detect Apriltag, visualize detection result 
 - Compute Apriltag center location in robot base frame
