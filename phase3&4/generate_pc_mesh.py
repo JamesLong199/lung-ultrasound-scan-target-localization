@@ -37,6 +37,7 @@ volume = o3d.pipelines.integration.ScalableTSDFVolume(
     sdf_trunc=0.04,
     color_type=o3d.pipelines.integration.TSDFVolumeColorType.RGB8)
 
+# show RGBD images from all the views
 for i in range(len(camera_poses)):
     print("Integrate {:d}-th image into the volume.".format(i))
     color = o3d.io.read_image("RGBD/color/{}.jpg".format(i))
@@ -64,11 +65,9 @@ for i in range(len(camera_poses)):
 
     rgbd = o3d.geometry.RGBDImage.create_from_color_and_depth(
         color, depth, depth_trunc=4.0, convert_rgb_to_intensity=False)
-    # volume.integrate(rgbd, intr, np.linalg.inv(camera_poses[i].pose)) # use the depth camera's intrinsics
     volume.integrate(rgbd,
                      o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault),
                      np.linalg.inv(camera_poses[i].pose))
-    # break
 
 
 # mesh generation:
@@ -87,11 +86,9 @@ for i in range(len(camera_poses)):
 
 
 # point cloud generation
-
 pcd = volume.extract_point_cloud()
 o3d.io.write_point_cloud("ply/TSDF_volume_pc.pcd", pcd)  # save the point cloud as a pcd file
 
-# print("Downsample the point cloud with a voxel of 0.05")
 downpcd = pcd.voxel_down_sample(voxel_size=0.005)
 o3d.visualization.draw_geometries([downpcd])
 
@@ -99,8 +96,8 @@ o3d.visualization.draw_geometries([downpcd])
 # downpcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
 # o3d.visualization.draw_geometries([downpcd], point_show_normal=True)
 
-
-# o3d.visualization.draw_geometries([pc],
+# visualize point cloud from a user defined angle
+# o3d.visualization.draw_geometries([pcd],
 #                                   front = [0.5297, -0.1873, -0.8272],
 #                                   lookat = [0.0712, 0.0312, 0.7251],
 #                                   up = [-0.0558, -0.9809, 0.1864],
@@ -108,7 +105,7 @@ o3d.visualization.draw_geometries([downpcd])
 
 
 
-# visualize distribution of point cloud coordinates
+# visualize distribution of point cloud coordinates with histogram
 
 # all_points = np.asarray(mesh.vertices) # pc.points / mesh.vertices
 # all_points = np.asarray(pc.points)
@@ -135,6 +132,3 @@ o3d.visualization.draw_geometries([downpcd])
 #
 # plt.show()
 
-# cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
-# cv2.imshow('RealSense', np.array(depth))
-# cv2.waitKey(100000)

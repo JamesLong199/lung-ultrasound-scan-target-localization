@@ -8,6 +8,7 @@ import URBasic
 import time
 from scipy.spatial.transform import Rotation as R
 from utils.apriltag_utils.annotate_tag import *
+import math3d as m3d
 
 # UR Configuration
 
@@ -48,13 +49,19 @@ robot.init_realtime_control()  # starts the realtime control loop on the Univers
 time.sleep(1)  # just a short wait to make sure everything is initialised
 
 # manually measured camera offset in TCP frame
-cam_t_tcp = np.array([-0.041, -0.002, 0.02])
-cam_R_tcp = np.array([
+
+# transformation from camera frame to tcp frame
+t_cam_tcp = np.array([-0.041, -0.002, 0.02])
+R_cam_tcp = np.array([
     [1, 0, 0],
     [0, 1, 0],
     [0, 0, 1]
 ])
 
+T_cam_tcp = np.zeros((4,4))
+T_cam_tcp[0:3,0:3] = R_cam_tcp
+T_cam_tcp[0:3,3] = t_cam_tcp
+T_cam_tcp[3,3] = 1
 
 # Depth Camera Configuration
 
@@ -116,13 +123,9 @@ def write_to_file(i, rot_mat, translation):
     file1.write(L5)
     file1.close()
 
-
 #### Start circling:
-cam1_R_base, cam2_R_base = None, None
-cam1_t_base, cam2_t_base = None, None
 
-# make the first camera view identity transformation
-write_to_file(0, np.eye(3), np.array([0, 0, 0]))
+T_cam_base_list = []
 
 try:
     for i, pose in enumerate(all_poses):
@@ -137,6 +140,8 @@ try:
         if not depth_frame or not color_frame:
             continue
 
+        print('capture number {} completed'.format(i))
+
         # Convert images to numpy arrays
         depth_image = np.asanyarray(depth_frame.get_data())
         color_image = np.asanyarray(color_frame.get_data())
@@ -145,23 +150,15 @@ try:
         cv.imwrite('RGBD/color/{}.jpg'.format(i), color_image)
         cv.imwrite('RGBD/depth/{}.png'.format(i), depth_image)
 
-        # compute extrinsic parameters in the base frame and update the odometry.log file
-        tcp_t_base = np.array(pose[:3])
-        tcp_R_base = R.from_rotvec(pose[3:]).as_matrix()
+        T_tcp_base = np.asarray(m3d.Transform(pose).get_matrix())
+        T_cam_base = T_tcp_base @ T_cam_tcp
+        T_cam_base_list.append(T_cam_base)
 
-        cam_t_base = tcp_R_base @ cam_t_tcp + tcp_t_base
-        cam_R_base = tcp_R_base @ cam_R_tcp
-
-        if i == 0:
-            cam1_R_base = cam_R_base
-            cam1_t_base = cam_t_base
-        elif i == 1:
-            cam2_R_base = cam_R_base
-            cam2_t_base = cam_t_base
-
-    relative_R = cam1_R_base.T @ cam2_R_base  # relative rotation
-    relative_t = cam1_R_base.T @ (cam2_t_base - cam1_t_base)  # relative translation
-    write_to_file(1, relative_R, relative_t)
+    for i,T_cam_base in enumerate(T_cam_base_list):
+        T_cam2_cam1 = np.linalg.inv(T_cam_base_list[0]) @ T_cam_base_list[i]
+        R_cam2_cam1 = T_cam2_cam1[0:3,0:3]
+        t_cam2_cam1 = T_cam2_cam1[0:3, 3]
+        write_to_file(i, R_cam2_cam1, t_cam2_cam1)
 
 finally:
     # Stop streaming
