@@ -43,15 +43,15 @@ def compute_tag_pose(result):
     :param result: one AprilTag detection result
     :return: tag pose in the base frame
     """
-    R_tag_cam = result.pose_R
-    t_tag_cam = (result.pose_t).reshape(3, )
 
-    # returns the 6d TCP/tool pose in the base frame
-    TCP_6d_pose_base = robot.get_actual_tcp_pose()
+    # transformation from robot tcp frame to base frame
+    TCP_6d_pose_base = robot.get_actual_tcp_pose()  # returns the 6d TCP/tool pose in the base frame
     # use math3d to convert (x,y,z,rx,rx,rz) to (R,t)
-    TCP_pose_base = np.asarray(m3d.Transform(TCP_6d_pose_base).get_matrix())  # 4x4 matrix
+    T_tcp_base = np.asarray(m3d.Transform(TCP_6d_pose_base).get_matrix())  # 4x4 matrix
 
     # transformation from tag frame to camera frame
+    R_tag_cam = result.pose_R
+    t_tag_cam = (result.pose_t).reshape(3, )
     T_tag_cam = np.zeros((4,4))  # capital T means transformation
     T_tag_cam[0:3,0:3] = R_tag_cam
     T_tag_cam[0:3,3] = t_tag_cam
@@ -64,13 +64,6 @@ def compute_tag_pose(result):
     T_cam_tcp[0:3, 3] = t_cam_tcp
     T_cam_tcp[3, 3] = 1
 
-    # transformation from robot tcp frame to base frame
-    R_tcp_base = TCP_pose_base[0:3, 0:3]
-    t_tcp_base = TCP_pose_base[0:3, 3].squeeze()
-    T_tcp_base = np.zeros((4, 4))
-    T_tcp_base[0:3, 0:3] = R_tcp_base
-    T_tcp_base[0:3, 3] = t_tcp_base
-    T_tcp_base[3, 3] = 1
 
     # transformation from tag frame to base frame
     T_tag_base = T_tcp_base @ T_cam_tcp @ T_tag_cam

@@ -126,17 +126,8 @@ def write_to_file(i, rot_mat, translation):
 
 
 #### Start circling:
-cam1_R_tag, cam2_R_tag = None, None
-cam1_t_tag, cam2_t_tag = None, None
+T_tag_cam_list = []
 
-# make the first camera view identity transformation
-write_to_file(0, np.eye(3), np.array([0, 0, 0]))
-
-# compute the relative transformation with multiple AprilTags and average the results
-cam1_R_tag_list = []
-cam2_R_tag_list = []
-cam1_t_tag_list = []
-cam2_t_tag_list = []
 try:
     for i, pose in enumerate(all_poses):
         robot.movej(pose=pose, a=ACCELERATION, v=VELOCITY)
@@ -161,53 +152,34 @@ try:
         _, detection_results = tagDetector.detect_tags(color_image, tag_size)
         show_frame(color_image)
 
-        curr_cam_R_tag_list = []
-        curr_cam_pos_tag_list = []
         print("Number of tags detected: ", len(detection_results))
         if len(detection_results) != 0:
+            T_tag_cam_avg = 0
             for result in detection_results:
                 annotate_tag(result, color_image)
                 show_frame(color_image)
 
-                if i == 0:
-                    tag_R_cam = result.pose_R
-                    tag_t_cam = result.pose_t
-                    tag_pos_cam = tag_R_cam @ tag_t_cam
-                    # print("tag_R_cam: \n", tag_R_cam)
-                    # print("tag_t_cam: \n", tag_t_cam)
-                    # print("tag_pos_cam: \n", tag_pos_cam)
+                T_tag_cam = np.zeros((4,4))
+                T_tag_cam[0:3,0:3] = result.pose_R
+                T_tag_cam[0:3,3] = result.pose_t.squeeze()
+                T_tag_cam[3,3] = 1
 
-                curr_cam_R_tag = result.pose_R.T  # camera rotation in tag frame
-                curr_cam_t_tag = -1 * result.pose_t  # camera translation in tag frame
-                curr_cam_pos_tag = curr_cam_R_tag @ curr_cam_t_tag  # camera position in tag frame
+                T_tag_cam_avg += T_tag_cam
 
-                curr_cam_R_tag_list.append(curr_cam_R_tag)
-                curr_cam_pos_tag_list.append(curr_cam_pos_tag)
+            T_tag_cam_avg = T_tag_cam_avg / len(detection_results)
+            T_tag_cam_list.append(T_tag_cam_avg)
+
         else:
             print("No Tag detected")
 
-        if i == 0:
-            cam1_R_tag_list = curr_cam_R_tag_list
-            cam1_t_tag_list = curr_cam_pos_tag_list
-        elif i == 1:
-            cam2_R_tag_list = curr_cam_R_tag_list
-            cam2_t_tag_list = curr_cam_pos_tag_list
 
     # compute the average translation and rotation of three AprilTag results
-    avg_trans = np.zeros(3)
-    avg_ang = np.zeros(3)
-    for (cam1_R_tag, cam1_t_tag, cam2_R_tag, cam2_t_tag) in zip(cam1_R_tag_list, cam1_t_tag_list, cam2_R_tag_list,
-                                                                cam2_t_tag_list):
-        rot_mat = cam1_R_tag.T @ cam2_R_tag  # relative rotation
-        translation = cam1_R_tag.T @ (cam2_t_tag - cam1_t_tag)  # relative translation
-
-        avg_ang += rotationMatrixToEulerAngles(rot_mat)
-        avg_trans += translation.squeeze()
-
-    avg_ang /= len(cam1_R_tag_list)
-    avg_rot = eulerAnglesToRotationMatrix(avg_ang)
-    avg_trans /= len(cam1_R_tag_list)
-    write_to_file(1, avg_rot, avg_trans)
+    for i,T_tag_cam in enumerate(T_tag_cam_list):
+        # transformation from the i-th camera to the first camera
+        T_cam2_cam1 = T_tag_cam_list[0] @ np.linalg.inv(T_tag_cam)
+        R_cam2_cam1 = T_cam2_cam1[0:3,0:3]
+        t_cam2_cam1 = T_cam2_cam1[0:3,3]
+        write_to_file(i, R_cam2_cam1, t_cam2_cam1)
 
 finally:
     # Stop streaming

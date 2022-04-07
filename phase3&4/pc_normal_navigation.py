@@ -24,15 +24,16 @@ robot.reset_error()
 print("robot initialised")
 time.sleep(1)
 
-robot.init_realtime_control()  # starts the realtime control loop on the Universal-Robot Controller
-time.sleep(1)  # just a short wait to make sure everything is initialised
+robot.init_realtime_control()
+time.sleep(1)
 
-tcp_pose_base = (0.394, 0.261, 0.049, 2.31, 1.016, -0.432)
+# must be the same with tcp_pose_base at the first camera view
+tcp_pose_base = (0.43414, 0.11073, 0.34996, 2.965, 0.326, 0.215)
 robot.movej(pose=tcp_pose_base, a=ACCELERATION, v=VELOCITY)
 
 # manually measured camera offset
-cam_t_tcp = np.array([-0.041, -0.002, 0.02])
-cam_R_tcp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+t_cam_tcp = np.array([-0.041, -0.002, 0.02])
+R_cam_tcp = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 cam_ang_tcp = np.array([0, 0, 0])
 
 # read point cloud
@@ -74,40 +75,30 @@ normals = np.asarray(downpcd.normals)
 
 
 # need to convert robot base coordinate to camera coordinate
-init_estimate = np.array([0, 0, 0.6])  # an initial estimate of the target point
+init_estimate = np.array([0, 0, 0.78])  # an initial estimate of the target point
 idx = np.argmin(np.square(coordinates - init_estimate).sum(axis=1))
 print('closest point:', coordinates[idx, :])
 
 target_normal = normals[idx]  # a unit vector
 print("target normal: ", target_normal)
 
-target_t_cam = coordinates[idx]
-print("target_t_cam: ", target_t_cam)
+t_target_cam = coordinates[idx]
+print("t_target_cam: ", t_target_cam)
 
 # decode rotation from the target normal vector
-target_R_cam = rotation_align(np.array([0, 0, 1]), -target_normal)
-print("target_R_cam: \n", target_R_cam)
+R_target_cam = rotation_align(np.array([0, 0, 1]), -target_normal)
+print("R_target_cam: \n", R_target_cam)
 
 # retrieve the transformation from tcp to base
-tcp_pose_base_mat = np.asarray(m3d.Transform(tcp_pose_base).get_matrix())
-tcp_R_base = tcp_pose_base_mat[0:3, 0:3]
-tcp_t_base = tcp_pose_base_mat[0:3, 3].squeeze()
-
-
-T_tcp_base = np.vstack([np.hstack([tcp_R_base, tcp_t_base.reshape(-1, 1)]), np.array([0, 0, 0, 1])])
-T_cam_tcp = np.vstack([np.hstack([cam_R_tcp, cam_t_tcp.reshape(-1, 1)]), np.array([0, 0, 0, 1])])
-T_target_cam = np.vstack([np.hstack([target_R_cam, target_t_cam.reshape(-1, 1)]), np.array([0, 0, 0, 1])])
+T_tcp_base = np.asarray(m3d.Transform(tcp_pose_base).get_matrix())
+T_cam_tcp = np.vstack([np.hstack([R_cam_tcp, t_cam_tcp.reshape(-1, 1)]), np.array([0, 0, 0, 1])])
+T_target_cam = np.vstack([np.hstack([R_target_cam, t_target_cam.reshape(-1, 1)]), np.array([0, 0, 0, 1])])
 
 T_target_base = T_tcp_base @ T_cam_tcp @ T_target_cam
-target_R_base = T_target_base[0:3, 0:3]
-target_t_base = T_target_base[0:3, 3]
-
-print('target_R_base:\n', target_R_base)
-print('target_t_base:\n', target_t_base)
 
 target_6d_pose_base = m3d.Transform(T_target_base).get_pose_vector()
 target_6d_pose_base[0:3] = tcp_pose_base[0:3]
-print("Changed orientation: ", target_6d_pose_base)
+print("Changed orientation:\n ", target_6d_pose_base)
 
 robot.movej(pose=target_6d_pose_base, a=ACCELERATION, v=VELOCITY)
 exit(0)
