@@ -51,11 +51,21 @@ time.sleep(1)  # just a short wait to make sure everything is initialised
 # manually measured camera offset in TCP frame
 
 # transformation from camera frame to tcp frame
-t_cam_tcp = np.array([-0.041, -0.002, 0.02])
+
+# manually estimated offsets
+# t_cam_tcp = np.array([-0.041, -0.002, 0.02])
+# R_cam_tcp = np.array([
+#     [1, 0, 0],
+#     [0, 1, 0],
+#     [0, 0, 1]
+# ])
+
+# hand-eye calibration: much more accurate!!!
+t_cam_tcp = np.array([-0.02847469, 0.00485245, 0.04717332])
 R_cam_tcp = np.array([
-    [1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1]
+    [0.99965676,  0.01999816, -0.0169242],
+    [-0.02057245,  0.99919404, -0.03446816],
+    [0.01622126,  0.0348045,   0.99926249]
 ])
 
 T_cam_tcp = np.zeros((4,4))

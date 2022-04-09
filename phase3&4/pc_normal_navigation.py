@@ -86,6 +86,7 @@ t_target_cam = coordinates[idx]
 print("t_target_cam: ", t_target_cam)
 
 # decode rotation from the target normal vector
+# compute the rotation from (0,0,1)/camera's z-axis to the negative direction of the target normal
 R_target_cam = rotation_align(np.array([0, 0, 1]), -target_normal)
 print("R_target_cam: \n", R_target_cam)
 
