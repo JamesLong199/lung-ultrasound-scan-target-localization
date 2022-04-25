@@ -21,3 +21,22 @@
   - Run the script
  
 
+# Phase 4: UR navigation with target pose
+
+# OpenPose procedure
+1. Run `OpenPose_UR_collect_data.py` to take pictures from two views, and compute their extrinsic matrices.
+2. Run `openpose_python.py` with the two images to obtain the pose keypoints. 
+3. Run `OpenPose_UR_move.py` to compute the target keypoint's coordinate in the base frame.
+
+# Procedure of computing the target pose's rotation
+1. Run `generate_pc_mesh.py` to generate the point cloud / mesh of the view.
+2. Supply target point's coordinate, run `pc_normal_navigation.py` to obtain the target pose's rotation in the base frame.
+
+# Pipeline
+1. Capture 2D images in two views
+2. Use OpenPose to compute 2D image coordinate of target scan point in each view. 
+3. Compute 3D camera coordinate (in the 1st camera view) of the target scan point using triangulation.
+4. Perform two-view integration to obtain the point cloud (in the 1st camera view)
+5. Locate the 3D camera coordinate in the point cloud, and find corresponding normal estimation. 
+6. Compute the target robot's pose in the base frame. 
+7. Move the robot arm to the target pose
