@@ -22,9 +22,12 @@ robot_start_position = (np.radians(-339.5), np.radians(-110.55), np.radians(-34.
                         np.radians(-125.05), np.radians(89.56), np.radians(291.04))  # joint
 
 # define two tool poses (in base frame) here
-all_poses = [ (0.37575, -0.00551, 0.44270, 2.952, -0.116, 0.194),
-              (0.30761, -0.07658, 0.53570, 2.986, 0.243, 0.753)]
+# all_poses = [ (0.37575, -0.00551, 0.44270, 2.952, -0.116, 0.194),
+#               (0.30761, -0.07658, 0.53570, 2.986, 0.243, 0.753)]
 
+# test on real human
+all_poses = [ (0.48615, 0.17334, 0.22594, 3.179, -0.191, 0.028),
+              (0.40051, -0.07548, 0.34226, 3.387, 0.073, 0.241)]
 
 # initialise robot with URBasic
 print("initialising robot")
