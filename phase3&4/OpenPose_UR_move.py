@@ -63,7 +63,7 @@ intr = np.array([[depth_intrinsics.fx, 0, depth_intrinsics.ppx],
 print("Intrinsics: \n", intr)
 
 
-# retrieve 2D openpose keypoints, and camera extrinsic matrices
+# retrieve 2D openpose_lib keypoints, and camera extrinsic matrices
 
 with open('OpenPose_UR_data/keypoints_json/cam_0_keypoints.json') as f:
     data = json.load(f)

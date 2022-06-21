@@ -126,7 +126,7 @@ try:
         show_frame(color_image)
 
         cv.imwrite('OpenPose_UR_data/color_images/cam_{}.jpg'.format(i), color_image)
-        cv.imwrite('../../openpose/python/OpenPose_UR/images/cam_{}.jpg'.format(i), color_image)
+        cv.imwrite('../../openpose_lib/python/OpenPose_UR/images/cam_{}.jpg'.format(i), color_image)
 
         T_tcp_base = np.asarray(m3d.Transform(pose).get_matrix())
         T_cam_base = T_tcp_base @ T_cam_tcp  # coordinates in cam frame to coordinates in base frame
