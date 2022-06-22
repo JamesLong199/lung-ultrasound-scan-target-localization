@@ -2,3 +2,4 @@
 .idea
 **/ur_log/
 /openpose_lib/
+*.pth
