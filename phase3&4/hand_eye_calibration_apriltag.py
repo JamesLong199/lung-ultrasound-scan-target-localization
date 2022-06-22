@@ -11,11 +11,23 @@ from utils.apriltag_utils.TagDetector import TagDetector
 from utils.pose_conversion import *
 from utils.apriltag_utils.annotate_tag import *
 
-all_poses = [(0.514, 0, 0.045, 2.523, 1.829, 0.042),
-             (0.474, 0.160, 0.024, 1.75, 2.342, -0.286),
-             (0.443, -0.056, 0.022, 1.157, 2.979, 0.465),
-             (0.45, 0.133, -0.128, 2.537, 1.256, 0.023),
-             (0.346, 0.225, 0.012, 1.907, 1.925, -0.155)]
+# all_poses = [(0.514, 0, 0.045, 2.523, 1.829, 0.042),
+#              (0.474, 0.160, 0.024, 1.75, 2.342, -0.286),
+#              (0.443, -0.056, 0.022, 1.157, 2.979, 0.465),
+#              (0.45, 0.133, -0.128, 2.537, 1.256, 0.023),
+#              (0.346, 0.225, 0.012, 1.907, 1.925, -0.155)]
+
+robot_start_position = (np.radians(-339.5), np.radians(-110.55), np.radians(-60.35),
+                        np.radians(-102.05), np.radians(84.56), np.radians(112.04))  # joint
+
+
+
+all_poses = [(0.411, 0.277, -0.139, 2.421, 0.228, 0.350),
+             (0.484, 0.073, -0.119, 2.333, 2.295, -0.596),
+             (0.464, 0.048, 0.084, 0.068, 3.587, -0.259),
+             (0.425, -0.005, 0.196, 1.162, 3.027, -0.152),
+             (0.429, -0.081, 0.017, 3.219, 0.819, -0.384),
+             (0.442, 0.026, 0.130, 2.244, 2,179, 0.138)]
 
 
 def log(R):
@@ -64,6 +76,8 @@ print("initialising robot")
 robotModel = URBasic.robotModel.RobotModel()
 robot = URBasic.urScriptExt.UrScriptExt(host=ROBOT_IP, robotModel=robotModel)
 
+robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
+
 robot.reset_error()
 print("robot initialised")
 time.sleep(1)
@@ -107,17 +121,21 @@ pipeline.start(config)
 
 # get camera intrinsic parameters
 profile = pipeline.get_active_profile()
-depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.depth))
+depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.color))  # forgot to use (rs.stream.color)
 depth_intrinsics = depth_profile.get_intrinsics()
 intr = np.array([[depth_intrinsics.fx, 0, depth_intrinsics.ppx],
                  [0, depth_intrinsics.fy, depth_intrinsics.ppy],
                  [0, 0, 1]])
+dist_coeffs = np.array(depth_intrinsics.coeffs)
+print('intrinsic matrix:\n', intr)
+print('distortion coefficient:\n', dist_coeffs)
 
 # AprilTag detector configuration
-tag_size = 0.048
+# tag_size = 0.048
+tag_size = 0.072
 tag_family = 'tagStandard41h12'
 cam_type = "standard"
-tagDetector = TagDetector(intr, None, tag_family, cam_type)
+tagDetector = TagDetector(intr, dist_coeffs, tag_family, cam_type)
 print("AprilTag detector prepared!")
 time.sleep(1)
 

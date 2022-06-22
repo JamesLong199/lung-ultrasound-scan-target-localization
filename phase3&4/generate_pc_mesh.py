@@ -65,8 +65,24 @@ for i in range(len(camera_poses)):
 
     rgbd = o3d.geometry.RGBDImage.create_from_color_and_depth(
         color, depth, depth_trunc=4.0, convert_rgb_to_intensity=False)
+
+    intr = o3d.camera.PinholeCameraIntrinsic(
+        width=640,
+        height=480,
+        fx=613.22027588,
+        fy=612.14581299,
+        cx=318.16168213,
+        cy=235.91072083
+    )
+
+
+
+    # volume.integrate(rgbd,
+    #                  o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault),
+    #                  np.linalg.inv(camera_poses[i].pose))
+
     volume.integrate(rgbd,
-                     o3d.camera.PinholeCameraIntrinsic(o3d.camera.PinholeCameraIntrinsicParameters.PrimeSenseDefault),
+                     intr,
                      np.linalg.inv(camera_poses[i].pose))
 
 
