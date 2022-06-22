@@ -22,15 +22,15 @@ robot_start_position = (np.radians(-339.5), np.radians(-110.55), np.radians(-34.
 # define two tool poses (in base frame) here
 
 # only rotation
-all_poses = [ (0.43414, 0.11073, 0.34996, 2.965, 0.326, 0.215),
-              (0.43414, 0.01073, 0.34996, 2.708, 1.377, 0.286)]
+# all_poses = [ (0.43414, 0.11073, 0.34996, 2.965, 0.326, 0.215),
+#               (0.43414, 0.01073, 0.34996, 2.708, 1.377, 0.286)]
 
 # vertical pose
 # all_poses = [(0.394, 0.261, 0.049, 2.31, 1.016, -0.432),
 #              (0.394, 0.261, 0.049, 2.31, 1.016, -0.432)]
 
-# all_poses = [ (0.38011, 0.00178, 0.4396, 3.153, 0.029, 0.38),
-#               (0.33711, 0.22542, 0.41898, 2.446, 0.975, 0.411) ]
+all_poses = [ (0.38011, 0.00178, 0.4396, 3.153, 0.029, 0.38),
+              (0.33711, 0.22542, 0.41898, 2.446, 0.975, 0.411) ]
 
 # initialise robot with URBasic
 print("initialising robot")
@@ -92,7 +92,7 @@ intr = np.array([[depth_intrinsics.fx, 0, depth_intrinsics.ppx],
 
 
 # AprilTag detector configuration
-tag_size = 0.048
+tag_size = 0.072
 tag_family = 'tagStandard41h12'
 cam_type = "standard"
 tagDetector = TagDetector(intr, None, tag_family, cam_type)
