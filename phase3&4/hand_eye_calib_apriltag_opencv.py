@@ -13,14 +13,17 @@ from utils.apriltag_utils.annotate_tag import *
 import cv2
 import argparse
 
+# eye-in-hand
+# all_poses = [(0.514, 0, 0.045, 2.523, 1.829, 0.042),
+#              (0.474, 0.160, 0.024, 1.75, 2.342, -0.286),
+#              (0.443, -0.056, 0.022, 1.157, 2.979, 0.465),
+#              (0.45, 0.133, -0.128, 2.537, 1.256, 0.023),
+#              (0.346, 0.225, 0.012, 1.907, 1.925, -0.155)]
 
-all_poses = [(0.514, 0, 0.045, 2.523, 1.829, 0.042),
-             (0.474, 0.160, 0.024, 1.75, 2.342, -0.286),
-             (0.443, -0.056, 0.022, 1.157, 2.979, 0.465),
-             (0.45, 0.133, -0.128, 2.537, 1.256, 0.023),
-             (0.346, 0.225, 0.012, 1.907, 1.925, -0.155)]
-
-
+# eye-to-hand
+all_poses = [ (0.3836, 0.037, 0.5736, 1.841, 0.142, 2.791),
+              (0.4005, 0.2097, 0.4688, 1.636, 0.208, 2.504),
+              (-0.158, -0.1377, 0.6274, 0.982, 1.260, 1.226)]
 
 
 # UR Configuration
@@ -77,7 +80,7 @@ pipeline.start(config)
 
 # get camera intrinsic parameters
 profile = pipeline.get_active_profile()
-depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.depth))
+depth_profile = rs.video_stream_profile(profile.get_stream(rs.stream.color))
 depth_intrinsics = depth_profile.get_intrinsics()
 intr = np.array([[depth_intrinsics.fx, 0, depth_intrinsics.ppx],
                  [0, depth_intrinsics.fy, depth_intrinsics.ppy],
@@ -141,7 +144,7 @@ try:
             show_frame(color_image)
 
             R_tag_cam_list.append(result.pose_R)
-            t_tag_cam_list.appned(result.pose_t.squeeze())
+            t_tag_cam_list.append(result.pose_t.squeeze())
         else:
             print("No Tag detected")
 
@@ -164,15 +167,15 @@ finally:
     robot.close()
 
     R, t = cv2.calibrateHandEye(
-        R_gripper2base=R_gripper2base,
-        t_gripper2base=t_gripper2base,
-        R_target2cam=R_target2cam,
-        t_target2cam=t_target2cam,
+        R_gripper2base=R_tcp_base_list,
+        t_gripper2base=t_tcp_base_list,
+        R_target2cam=R_tag_cam_list,
+        t_target2cam=t_tag_cam_list,
     )
-    T = np.zeros(4,4)
+    T = np.zeros((4,4))
     T[0:3,0:3] = R
-    T[0:3,3] = t
-    T[3,3] = 1
+    T[0:3,3] = t.squeeze()
+    T[3,3] = 1.
 
     print("Hand-eye calibration T: \n", T)
 

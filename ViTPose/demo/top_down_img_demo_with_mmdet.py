@@ -4,6 +4,7 @@ import pickle
 import warnings
 import glob
 from argparse import ArgumentParser
+import time
 
 from mmpose.apis import (inference_top_down_pose_model, init_pose_model,
                          process_mmdet_results, vis_pose_result)
@@ -63,6 +64,16 @@ def main():
         type=int,
         default=1,
         help='Link thickness for visualization')
+    parser.add_argument(
+        '--subject_name',
+        type=str,
+        default="john_doe",
+        help='subject name')
+    parser.add_argument(
+        '--scan_pose',
+        type=str,
+        default="front",
+        help='scan_pose')
 
     assert has_mmdet, 'Please install mmdet to run the demo.'
 
@@ -73,11 +84,16 @@ def main():
     assert args.det_config is not None
     assert args.det_checkpoint is not None
 
+    start_time = time.time()
     det_model = init_detector(
         args.det_config, args.det_checkpoint, device=args.device.lower())
+    print("load detection model: {:.3f} s".format(time.time() - start_time))
     # build the pose model from a config file and a checkpoint file
+
+    start_time = time.time()
     pose_model = init_pose_model(
         args.pose_config, args.pose_checkpoint, device=args.device.lower())
+    print("load pose estimation model: {:.3f} s".format(time.time() - start_time))
 
     dataset = pose_model.cfg.data['test']['type']
     dataset_info = pose_model.cfg.data['test'].get('dataset_info', None)
@@ -89,16 +105,22 @@ def main():
     else:
         dataset_info = DatasetInfo(dataset_info)
 
-    img_root = "../phase3&4/ViTPose_UR_data/color_images"
+    folder_path = 'final_phase/ViTPose_UR_data/' + args.subject_name + '/' + args.scan_pose + '/'
+    img_root = folder_path + "color_images"
     os.chdir(img_root)
     for i, file in enumerate(glob.glob("*.jpg")):
-        image_name = os.path.join(args.img_root, file)
+        image_name = os.path.join(file)
+        print(image_name)
 
         # test a single image, the resulting box is (x1, y1, x2, y2)
+        start_time = time.time()
         mmdet_results = inference_detector(det_model, image_name)
+        print("detection time: {:.3f} s".format(time.time()-start_time))
 
         # keep the person class bounding boxes.
+        start_time = time.time()
         person_results = process_mmdet_results(mmdet_results, args.det_cat_id)
+        print("pose estimation time: {:.3f} s".format(time.time() - start_time))
 
         # test a single image, with a list of bboxes.
 
@@ -120,12 +142,12 @@ def main():
             outputs=output_layer_names)
 
         # save pose_results to a file
-        with open('../keypoints/cam_{}_keypoints.pickle'.format(i), 'wb') as f:
+        with open('../keypoints/cam_{}_keypoints.pickle'.format(i+1), 'wb') as f:
             pickle.dump(pose_results, f)
 
         out_img_root = "../output_images"
         os.makedirs(out_img_root, exist_ok=True)
-        out_file = os.path.join(out_img_root, f'output_{i}.jpg')
+        out_file = os.path.join(out_img_root, f'output_{i+1}.jpg')
 
         # show the results
         vis_pose_result(
