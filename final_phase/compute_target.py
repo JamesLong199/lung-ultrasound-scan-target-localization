@@ -9,7 +9,12 @@ import open3d as o3d
 from scipy.linalg import null_space
 
 from subject_info import SUBJECT_NAME, SCAN_POSE
+import argparse
 
+parser = argparse.ArgumentParser(description='Compute target')
+parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
+args = parser.parse_args()
+POSE_MODEL = args.pose_model
 
 def compute_3D_normal(X1, X2, X3):
     t1 = X1 - X2
@@ -180,24 +185,40 @@ T_base_cam2 = np.linalg.inv(T_cam2_base)
 print("T_base_cam2/extr: \n", T_base_cam2)
 
 # read pose keypoints
-with open(folder_path + 'keypoints/cam_1_keypoints.pickle','rb') as f:
+with open(folder_path + POSE_MODEL + '/keypoints/cam_1_keypoints.pickle','rb') as f:
     cam1_keypoints = pickle.load(f)
-    l_shoulder1 = cam1_keypoints[0]['keypoints'][5][:2]
-    r_shoulder1 = cam1_keypoints[0]['keypoints'][6][:2]
-    l_hip1 = cam1_keypoints[0]['keypoints'][11][:2]
-    r_hip1 = cam1_keypoints[0]['keypoints'][12][:2]
-    l_nipple1 = cam1_keypoints[0]['keypoints'][17][:2]
-    r_nipple1 = cam1_keypoints[0]['keypoints'][18][:2]
+    if POSE_MODEL == "OpenPose":
+        l_shoulder1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][15:17])
+        r_shoulder1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][6:8])
+        l_hip1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][36:38])
+        r_hip1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][27:29])
+        l_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][78:80])
+        r_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][81:83])
+    else:
+        l_shoulder1 = cam1_keypoints[0]['keypoints'][5][:2]
+        r_shoulder1 = cam1_keypoints[0]['keypoints'][6][:2]
+        l_hip1 = cam1_keypoints[0]['keypoints'][11][:2]
+        r_hip1 = cam1_keypoints[0]['keypoints'][12][:2]
+        l_nipple1 = cam1_keypoints[0]['keypoints'][17][:2]
+        r_nipple1 = cam1_keypoints[0]['keypoints'][18][:2]
 
 
-with open(folder_path + 'keypoints/cam_2_keypoints.pickle','rb') as f:
+with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle','rb') as f:
     cam2_keypoints = pickle.load(f)
-    l_shoulder2 = cam2_keypoints[0]['keypoints'][5][:2]
-    r_shoulder2 = cam2_keypoints[0]['keypoints'][6][:2]
-    l_hip2 = cam2_keypoints[0]['keypoints'][11][:2]
-    r_hip2 = cam2_keypoints[0]['keypoints'][12][:2]
-    l_nipple2 = cam2_keypoints[0]['keypoints'][17][:2]
-    r_nipple2 = cam2_keypoints[0]['keypoints'][18][:2]
+    if POSE_MODEL == "OpenPose":
+        l_shoulder2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][15:17])
+        r_shoulder2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][6:8])
+        l_hip2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][36:38])
+        r_hip2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][27:29])
+        l_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][78:80])
+        r_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][81:83])
+    else:
+        l_shoulder2 = cam2_keypoints[0]['keypoints'][5][:2]
+        r_shoulder2 = cam2_keypoints[0]['keypoints'][6][:2]
+        l_hip2 = cam2_keypoints[0]['keypoints'][11][:2]
+        r_hip2 = cam2_keypoints[0]['keypoints'][12][:2]
+        l_nipple2 = cam2_keypoints[0]['keypoints'][17][:2]
+        r_nipple2 = cam2_keypoints[0]['keypoints'][18][:2]
 
 # TSDF volume
 volume = o3d.pipelines.integration.ScalableTSDFVolume(
@@ -298,9 +319,9 @@ elif SCAN_POSE == 'side':
     final_target_list.append(target4)
 
 
-with open(folder_path + 'final_target.pickle', 'wb') as f:
+with open(folder_path + POSE_MODEL + '/final_target.pickle', 'wb') as f:
     pickle.dump(final_target_list, f)
 
-with open(folder_path + 'position_data.pickle', 'wb') as f:
+with open(folder_path + POSE_MODEL + '/position_data.pickle', 'wb') as f:
     pickle.dump(position_data, f)
 

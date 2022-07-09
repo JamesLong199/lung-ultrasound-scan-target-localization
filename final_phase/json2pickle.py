@@ -10,7 +10,6 @@ folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/' + 'Open
 
 with open(folder_path + 'cam_1_keypoints.json') as f:
     cam1_data = json.load(f)
-    print(cam1_data)
     with open(folder_path + 'cam_1_keypoints.pickle', 'wb') as f:
         pickle.dump(cam1_data, f)
 

@@ -6,8 +6,8 @@ import pickle
 SUBJECT_NAME = 'jianzhi_long'
 # SUBJECT_NAME = 'benny_cai'
 
-# SCAN_POSE = 'side'
-SCAN_POSE = 'front'
+SCAN_POSE = 'side'
+# SCAN_POSE = 'front'
 
 if __name__ == '__main__':
 

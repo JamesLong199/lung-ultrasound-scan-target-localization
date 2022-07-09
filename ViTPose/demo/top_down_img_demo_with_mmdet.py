@@ -151,7 +151,7 @@ def main():
         with open('../' + args.pose_model + '/keypoints/cam_{}_keypoints.pickle'.format(i+1), 'wb') as f:
             pickle.dump(pose_results, f)
 
-        out_img_root = '../' + args.pose_model + 'output_images'
+        out_img_root = '../' + args.pose_model + '/output_images'
         os.makedirs(out_img_root, exist_ok=True)
         out_file = os.path.join(out_img_root, f'output_{i+1}.jpg')
 

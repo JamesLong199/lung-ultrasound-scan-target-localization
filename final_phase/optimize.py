@@ -7,6 +7,12 @@ from torch.utils.data import DataLoader
 import pickle
 import numpy as np
 import time
+import argparse
+
+parser = argparse.ArgumentParser(description='Compute target')
+parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
+args = parser.parse_args()
+POSE_MODEL = args.pose_model
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 
@@ -129,7 +135,7 @@ if __name__ == '__main__':
             continue
 
         scan_pose = 'front'
-        with open(subdir + '/' + scan_pose + '/position_data.pickle', 'rb') as f:
+        with open(subdir + '/' + scan_pose + POSE_MODEL + '/position_data.pickle', 'rb') as f:
             position_data = pickle.load(f)
 
         target12_data[0].append(position_data[scan_pose][0])  # X1
@@ -142,7 +148,7 @@ if __name__ == '__main__':
         target2_GT.append(ground_truth['target_2'])
 
         scan_pose = 'side'
-        with open(subdir + '/' + scan_pose + '/position_data.pickle', 'rb') as f:
+        with open(subdir + '/' + scan_pose + POSE_MODEL + '/position_data.pickle', 'rb') as f:
             position_data = pickle.load(f)
 
         target4_data[0].append(position_data[scan_pose][0])  # X1

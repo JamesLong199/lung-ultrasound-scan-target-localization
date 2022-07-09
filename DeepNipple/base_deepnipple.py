@@ -14,7 +14,6 @@ import cv2
 from utils.code.deep_nipple import DeepNipple
 
 from final_phase.subject_info import SUBJECT_NAME, SCAN_POSE
-from run_pipeline import POSE_MODEL
 
 import os
 
@@ -23,6 +22,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 parser = argparse.ArgumentParser(description='DeepNipple algorithm')
 parser.add_argument('--mode', type=str, default='seg', help='seg or bbox mode')
 parser.add_argument('--show', type=bool, default=True, help='show the output')
+parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
 
 
 if __name__ == '__main__':
@@ -32,6 +32,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     alg_mode = args.mode
     show = args.show
+    POSE_MODEL = args.pose_model
 
     folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
     img_root = folder_path + "color_images"
@@ -70,7 +71,7 @@ if __name__ == '__main__':
                 pose_results[0]['keypoints'] = np.vstack( (pose_results[0]['keypoints'], l_nipple) )
                 pose_results[0]['keypoints'] = np.vstack( (pose_results[0]['keypoints'], r_nipple) )
 
-            print(pose_results)
+            # print(pose_results)
 
         # save nipple coordinates to the file
         with open('../' + POSE_MODEL + '/keypoints/cam_{}_keypoints.pickle'.format(i + 1), 'wb') as f:

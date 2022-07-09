@@ -17,6 +17,12 @@ import pickle
 from triangulation import *
 
 from subject_info import SUBJECT_NAME, SCAN_POSE
+import argparse
+
+parser = argparse.ArgumentParser(description='Compute target')
+parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
+args = parser.parse_args()
+POSE_MODEL = args.pose_model
 
 folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
@@ -117,7 +123,7 @@ robot.init_realtime_control()
 time.sleep(1)
 robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
 
-with open(folder_path + 'final_target.pickle', 'rb') as f:
+with open(folder_path + POSE_MODEL + '/final_target.pickle', 'rb') as f:
     X_targets =  pickle.load(f)
 
 for i, X_target in enumerate(X_targets):

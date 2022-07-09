@@ -21,6 +21,8 @@ try:
     try:
         # Change these variables to point to the correct folder (Release/x64 etc.)
         sys.path.append(dir_path + '/../openpose_lib/bin/python/openpose/Release');
+
+        # original_environ_path = os.environ['PATH']
         os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../openpose_lib/x64/Release;' +  dir_path + '/../openpose_lib/bin;'
         import pyopenpose as op
     except ImportError as e:
@@ -55,6 +57,9 @@ try:
     opWrapper = op.WrapperPython(op.ThreadManagerMode.Synchronous)
     opWrapper.configure(params)
     opWrapper.execute()
+
+    # os.environ['PATH'] = original_environ_path
+
 except Exception as e:
     print(e)
     sys.exit(-1)
