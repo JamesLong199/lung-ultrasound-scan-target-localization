@@ -21,7 +21,6 @@ try:
     try:
         # Change these variables to point to the correct folder (Release/x64 etc.)
         sys.path.append(dir_path + '/../openpose_lib/bin/python/openpose/Release');
-        # print(dir_path + '/../openpose_lib/bin/python/openpose_lib/Release')
         os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../openpose_lib/x64/Release;' +  dir_path + '/../openpose_lib/bin;'
         import pyopenpose as op
     except ImportError as e:
@@ -34,7 +33,7 @@ try:
 
     # Custom Params (refer to include/openpose_lib/flags.hpp for more parameters)
     params = dict()
-    params["model_folder"] = "../openpose_lib/models/"
+    params["model_folder"] = "openpose_lib/models/"
 
     # Add others in path?
     for i in range(0, len(args[1])):

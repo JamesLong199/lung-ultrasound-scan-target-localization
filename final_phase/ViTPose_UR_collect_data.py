@@ -38,7 +38,7 @@ cam1_intr = np.array([[color_intrinsics_1.fx, 0, color_intrinsics_1.ppx],
                  [0, color_intrinsics_1.fy, color_intrinsics_1.ppy],
                  [0, 0, 1]])
 
-folder_path = 'final_phase/ViTPose_UR_data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
+folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'wb') as f:
     pickle.dump(cam1_intr, f)

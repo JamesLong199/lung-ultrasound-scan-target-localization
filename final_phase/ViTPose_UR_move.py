@@ -18,7 +18,7 @@ from triangulation import *
 
 from subject_info import SUBJECT_NAME, SCAN_POSE
 
-folder_path = 'final_phase/ViTPose_UR_data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
+folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
 # read intrinsics
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'rb') as f:

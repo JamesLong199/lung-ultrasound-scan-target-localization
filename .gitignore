@@ -4,4 +4,4 @@
 /openpose_lib/
 *.pth
 *.pkl
-/final_phase/ViTPose_UR_data/**
+/final_phase/data/**

@@ -313,6 +313,6 @@ finally:
 
     R = T[0:3, 0:3]
     t = T[0:3, 3]
-    write_to_file('ViTPose_UR_data/odometry.log', args.cam-1, R, t.squeeze())
+    write_to_file('data/odometry.log', args.cam-1, R, t.squeeze())
 
     exit(0)
