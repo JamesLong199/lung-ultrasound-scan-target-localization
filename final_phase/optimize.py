@@ -122,7 +122,7 @@ if __name__ == '__main__':
     target4_data = [[], [], []]
     target4_GT = []
 
-    os.chdir('ViTPose_UR_data')
+    os.chdir('data')
 
     for subdir in os.listdir():
         if not os.path.isdir(subdir):

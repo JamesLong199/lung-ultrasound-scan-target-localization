@@ -175,8 +175,8 @@ volume = o3d.pipelines.integration.ScalableTSDFVolume(
 # show RGBD images from all the views
 for i in range(len(camera_poses)):
     print("Integrate {:d}-th image into the volume.".format(i))
-    color = o3d.io.read_image("ViTPose_UR_data/color_images/cam_{}.jpg".format(i))
-    depth = o3d.io.read_image("ViTPose_UR_data/depth_images/cam_{}.png".format(i))
+    color = o3d.io.read_image("data/color_images/cam_{}.jpg".format(i))
+    depth = o3d.io.read_image("data/depth_images/cam_{}.png".format(i))
 
     depth_image = np.asanyarray(depth)
     color_image = np.asanyarray(color)

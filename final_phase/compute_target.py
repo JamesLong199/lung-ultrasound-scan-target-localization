@@ -159,7 +159,7 @@ def draw_side_target_point(target_point1, target_point2, r_hip1, r_shoulder1, r_
     plt.show()
 
 
-folder_path = 'final_phase/ViTPose_UR_data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
+folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
 # read intrinsics
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'rb') as f:

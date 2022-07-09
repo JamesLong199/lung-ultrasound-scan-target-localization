@@ -74,6 +74,12 @@ def main():
         type=str,
         default="front",
         help='scan_pose')
+    parser.add_argument(
+        '--pose_model',
+        type=str,
+        default="ViTPose_large",
+        choices=['ViTPose_large', 'ViTPose_base'],
+        help='ViTPose model')
 
     assert has_mmdet, 'Please install mmdet to run the demo.'
 
@@ -105,7 +111,7 @@ def main():
     else:
         dataset_info = DatasetInfo(dataset_info)
 
-    folder_path = 'final_phase/ViTPose_UR_data/' + args.subject_name + '/' + args.scan_pose + '/'
+    folder_path = 'final_phase/data/' + args.subject_name + '/' + args.scan_pose + '/'
     img_root = folder_path + "color_images"
     os.chdir(img_root)
     for i, file in enumerate(glob.glob("*.jpg")):
@@ -142,10 +148,10 @@ def main():
             outputs=output_layer_names)
 
         # save pose_results to a file
-        with open('../keypoints/cam_{}_keypoints.pickle'.format(i+1), 'wb') as f:
+        with open('../' + args.pose_model + '/keypoints/cam_{}_keypoints.pickle'.format(i+1), 'wb') as f:
             pickle.dump(pose_results, f)
 
-        out_img_root = "../output_images"
+        out_img_root = '../' + args.pose_model + 'output_images'
         os.makedirs(out_img_root, exist_ok=True)
         out_file = os.path.join(out_img_root, f'output_{i+1}.jpg')
 

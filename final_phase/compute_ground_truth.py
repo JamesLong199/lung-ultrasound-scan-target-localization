@@ -8,7 +8,7 @@ GT_cam1 = np.array([325.0, 224.0])
 GT_cam2 = np.array([282.8, 244.9])
 target = 'target_4'  # 'target_1', 'target_2', 'target_4'
 
-folder_path = 'ViTPose_UR_data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
+folder_path = 'data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
 # read intrinsics
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'rb') as f:

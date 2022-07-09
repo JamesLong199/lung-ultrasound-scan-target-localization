@@ -115,7 +115,7 @@ def show_frame(frame):
 
 
 def write_extrinsics_to_file(i, transformation):
-    with open('ViTPose_UR_data/extrinsics/cam_{}_extrinsics.pickle'.format(i), 'wb') as f:
+    with open('data/extrinsics/cam_{}_extrinsics.pickle'.format(i), 'wb') as f:
         pickle.dump(transformation, f)
 
 
@@ -161,8 +161,8 @@ try:
         color_image = np.asanyarray(color_frame.get_data())
         show_frame(color_image)
 
-        cv.imwrite('ViTPose_UR_data/color_images/cam_{}.jpg'.format(i), color_image)
-        cv.imwrite('ViTPose_UR_data/depth_images/cam_{}.png'.format(i), depth_image)
+        cv.imwrite('data/color_images/cam_{}.jpg'.format(i), color_image)
+        cv.imwrite('data/depth_images/cam_{}.png'.format(i), depth_image)
 
         T_tcp_base = np.asarray(m3d.Transform(pose).get_matrix())
         T_cam_base = T_tcp_base @ T_cam_tcp  # coordinates in cam frame to coordinates in base frame
