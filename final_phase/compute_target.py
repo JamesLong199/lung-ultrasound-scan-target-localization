@@ -192,15 +192,15 @@ with open(folder_path + POSE_MODEL + '/keypoints/cam_1_keypoints.pickle','rb') a
         r_shoulder1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][6:8])
         l_hip1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][36:38])
         r_hip1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][27:29])
-        l_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][78:80])
-        r_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][81:83])
+        # l_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][78:80])
+        # r_nipple1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][81:83])
     else:
         l_shoulder1 = cam1_keypoints[0]['keypoints'][5][:2]
         r_shoulder1 = cam1_keypoints[0]['keypoints'][6][:2]
         l_hip1 = cam1_keypoints[0]['keypoints'][11][:2]
         r_hip1 = cam1_keypoints[0]['keypoints'][12][:2]
-        l_nipple1 = cam1_keypoints[0]['keypoints'][17][:2]
-        r_nipple1 = cam1_keypoints[0]['keypoints'][18][:2]
+        # l_nipple1 = cam1_keypoints[0]['keypoints'][17][:2]
+        # r_nipple1 = cam1_keypoints[0]['keypoints'][18][:2]
 
 
 with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle','rb') as f:
@@ -210,15 +210,15 @@ with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle','rb') a
         r_shoulder2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][6:8])
         l_hip2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][36:38])
         r_hip2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][27:29])
-        l_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][78:80])
-        r_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][81:83])
+        # l_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][78:80])
+        # r_nipple2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][81:83])
     else:
         l_shoulder2 = cam2_keypoints[0]['keypoints'][5][:2]
         r_shoulder2 = cam2_keypoints[0]['keypoints'][6][:2]
         l_hip2 = cam2_keypoints[0]['keypoints'][11][:2]
         r_hip2 = cam2_keypoints[0]['keypoints'][12][:2]
-        l_nipple2 = cam2_keypoints[0]['keypoints'][17][:2]
-        r_nipple2 = cam2_keypoints[0]['keypoints'][18][:2]
+        # l_nipple2 = cam2_keypoints[0]['keypoints'][17][:2]
+        # r_nipple2 = cam2_keypoints[0]['keypoints'][18][:2]
 
 # TSDF volume
 volume = o3d.pipelines.integration.ScalableTSDFVolume(

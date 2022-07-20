@@ -55,7 +55,7 @@ with open(folder_path + 'intrinsics/cam_2_intrinsics.pickle', 'wb') as f:
     pickle.dump(cam2_intr, f)
 
 exposure_1 = 156
-exposure_2 = 200
+exposure_2 = 250
 
 try:
     cam1_success, cam2_success = False, False

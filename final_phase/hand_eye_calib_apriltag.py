@@ -14,6 +14,15 @@ from utils.trajectory_io import *
 import cv2
 import argparse
 
+parser = argparse.ArgumentParser(description="""Eye-to-hand calibration algorithm. """)
+parser.add_argument("--type", type=str, default="eye_to_hand", choices=("eye_in_hand","eye_to_hand"),
+                    help="eye-in-hand calibration or eye-to-hand calibration")
+parser.add_argument('--cam', type=int, default=2, help='Camera 1 or camera 2')
+
+
+args = parser.parse_args()
+TYPE = args.type
+
 
 def log(R):
     # Rotation matrix logarithm
@@ -70,9 +79,9 @@ robot_start_position = (np.radians(-355.54), np.radians(-181.98), np.radians(119
 #             (0.224, 0.404, 0.506, 0.438, 0.600, 0.080),
 #             (0.0643, 0.4696, 0.4764, 0.303, 0.359, 0.132),
 #             (0.086, 0.539, 0.474, 1.015, -1.746, 5.062),
-#             # (0.179, 0.327, 0.638, 0.497, 0.204, -0.729),
-#             # (0.287, 0.281, 0.741, 0.009, 0.473, 1.758),
-#             # (0.209, 0.425, 0.587, 0.182, 0.230, -1.062),
+#             (0.179, 0.327, 0.638, 0.497, 0.204, -0.729),
+#             (0.287, 0.281, 0.741, 0.009, 0.473, 1.758),
+#             (0.209, 0.425, 0.587, 0.182, 0.230, -1.062),
 #             (0.127, 0.424, 0.587, 0.067, 0.827, -0.495),
 #             (0.146, 0.354, 0.477, 0.160, -0.035, -0.198),
 #             (0.252, 0.406, 0.353, 0.027, -0.12, -0.205),
@@ -227,15 +236,6 @@ time.sleep(1)
 def show_frame(frame):
     cv.imshow('RobotCamera', frame)
     k = cv.waitKey(6) & 0xff
-
-parser = argparse.ArgumentParser(description="""Eye-to-hand calibration algorithm. """)
-parser.add_argument("--type", type=str, default="eye_to_hand", choices=("eye_in_hand","eye_to_hand"),
-                    help="eye-in-hand calibration or eye-to-hand calibration")
-parser.add_argument('--cam', type=int, default=1, help='Camera 1 or camera 2')
-
-
-args = parser.parse_args()
-TYPE = args.type
 
 T_tcp_base_list = []
 T_tag_cam_list = []

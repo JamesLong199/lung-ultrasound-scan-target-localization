@@ -108,8 +108,16 @@ VELOCITY = 0.5  # robot speed value
 #                         np.radians(-28.18), np.radians(91.45), np.radians(357.25))  # joint
 # robot_start_position = (np.radians(-269.76), np.radians(-5.37), np.radians(-82.09),
 #                         np.radians(-2.54), np.radians(90.21), np.radians(221.59))  # joint
+
 robot_start_position = (np.radians(-99.73), np.radians(-171.50), np.radians(85.98),
-                        np.radians(-1.81), np.radians(90.23), np.radians(221.59))  # joint
+                        np.radians(-1.81), np.radians(90.23), np.radians(221.59))   # front
+
+robot_waypoint = (np.radians(98.57), np.radians(-113.38), np.radians(-38.86),
+                 np.radians(-90.), np.radians(91.28), np.radians(155.32))
+
+# robot_start_position = (np.radians(-99.73), np.radians(-171.50), np.radians(85.98),
+#                         np.radians(-1.81), np.radians(90.23), np.radians(221.59))  # side
+
 
 # initialise robot with URBasic
 print("initialising robot")
@@ -122,6 +130,7 @@ time.sleep(1)
 robot.init_realtime_control()
 time.sleep(1)
 robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
+
 
 with open(folder_path + POSE_MODEL + '/final_target.pickle', 'rb') as f:
     X_targets =  pickle.load(f)
@@ -160,9 +169,11 @@ for i, X_target in enumerate(X_targets):
     target_6d_pose_base = m3d.Transform(T_target_base).get_pose_vector()
     print("Final 6d pose base: ", target_6d_pose_base)
 
+    robot.movej(q=robot_waypoint, a=ACCELERATION, v=VELOCITY)
     robot.movej(pose=target_6d_pose_base, a=ACCELERATION, v=VELOCITY)
 
-    time.sleep(5)
+    time.sleep(3)
+    robot.movej(q=robot_waypoint, a=ACCELERATION, v=VELOCITY)
     robot.movej(q=robot_start_position, a=ACCELERATION, v=VELOCITY)
 
 

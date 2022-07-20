@@ -2,9 +2,7 @@ import os
 import shutil
 import pickle
 
-# SUBJECT_NAME = 'yifeng_bu'
-SUBJECT_NAME = 'jianzhi_long'
-# SUBJECT_NAME = 'benny_cai'
+SUBJECT_NAME = 'benny_cai'
 
 SCAN_POSE = 'side'
 # SCAN_POSE = 'front'

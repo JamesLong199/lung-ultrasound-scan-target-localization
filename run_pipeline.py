@@ -3,12 +3,12 @@
 import subprocess
 from final_phase.subject_info import SUBJECT_NAME, SCAN_POSE
 
-POSE_MODEL = 'ViTPose_base'  # ViTPose_large, ViTPose_base, OpenPose
+POSE_MODEL = 'ViTPose_large'  # ViTPose_large, ViTPose_base, OpenPose
 
-# # Capture two color/depth images with two Intel Realsense depth camera
-# subprocess.run([
-#                 "python", "final_phase/ViTPose_UR_collect_data.py",
-#                 ])
+# Capture two color/depth images with two Intel Realsense depth camera
+subprocess.run([
+                "python", "final_phase/ViTPose_UR_collect_data.py",
+                ])
 
 
 # Run pose estimation on the two color images, save shoulders & hips keypoints.
@@ -67,8 +67,8 @@ subprocess.run([
                 "--pose_model={}".format(POSE_MODEL)
                 ])
 
-# # Move robot
-# subprocess.run([
-#                 "python", "final_phase/ViTPose_UR_move.py",
-#                 "--pose_model={}".format(POSE_MODEL)
-#                ])
+# Move robot
+subprocess.run([
+                "python", "final_phase/ViTPose_UR_move.py",
+                "--pose_model={}".format(POSE_MODEL)
+               ])
