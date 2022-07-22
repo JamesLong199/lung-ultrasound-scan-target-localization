@@ -3,8 +3,18 @@
 import json
 import pickle
 import os
+import argparse
 
 from subject_info import SUBJECT_NAME, SCAN_POSE
+
+parser = argparse.ArgumentParser(description='json2pickle')
+parser.add_argument('--subject_name', type=str, default='John Doe', help='subject name')
+parser.add_argument('--scan_pose', type=str, default='none', help='scan pose')
+args = parser.parse_args()
+if args.subject_name != 'John Doe':
+    SUBJECT_NAME = args.subject_name
+if args.scan_pose != 'none':
+    SCAN_POSE = args.scan_pose
 
 folder_path = 'final_phase/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/' + 'OpenPose/keypoints/'
 

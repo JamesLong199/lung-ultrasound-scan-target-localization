@@ -5,3 +5,5 @@
 *.pth
 *.pkl
 /final_phase/data/**
+*.pickle
+*.xlsx
