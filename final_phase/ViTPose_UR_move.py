@@ -50,20 +50,20 @@ for i in range(len(camera_poses)):
     color = o3d.io.read_image(folder_path + "color_images/cam_{}.jpg".format(i+1))
     depth = o3d.io.read_image(folder_path + "depth_images/cam_{}.png".format(i+1))
 
-    depth_image = np.asanyarray(depth)
-    color_image = np.asanyarray(color)
-
-    depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.09), cv2.COLORMAP_JET)
-    depth_colormap_dim = depth_colormap.shape
-    color_colormap_dim = color_image.shape
-
-    # If depth and color resolutions are different, resize color image to match depth image for display
-    if depth_colormap_dim != color_colormap_dim:
-        resized_color_image = cv2.resize(color_image, dsize=(depth_colormap_dim[1], depth_colormap_dim[0]),
-                                         interpolation=cv2.INTER_AREA)
-        images = np.hstack((resized_color_image, depth_colormap))
-    else:
-        images = np.hstack((color_image, depth_colormap))
+    # depth_image = np.asanyarray(depth)
+    # color_image = np.asanyarray(color)
+    #
+    # depth_colormap = cv2.applyColorMap(cv2.convertScaleAbs(depth_image, alpha=0.09), cv2.COLORMAP_JET)
+    # depth_colormap_dim = depth_colormap.shape
+    # color_colormap_dim = color_image.shape
+    #
+    # # If depth and color resolutions are different, resize color image to match depth image for display
+    # if depth_colormap_dim != color_colormap_dim:
+    #     resized_color_image = cv2.resize(color_image, dsize=(depth_colormap_dim[1], depth_colormap_dim[0]),
+    #                                      interpolation=cv2.INTER_AREA)
+    #     images = np.hstack((resized_color_image, depth_colormap))
+    # else:
+    #     images = np.hstack((color_image, depth_colormap))
 
     # Show images
     # cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)

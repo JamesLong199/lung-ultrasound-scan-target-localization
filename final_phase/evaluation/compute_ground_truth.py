@@ -125,6 +125,7 @@ def post_process(pc, original_3d):
 
 
 def post_process_2(pc, original_3d):
+    # change all xyz (we didn't use it)
     idx = np.argmin(np.square(pc - original_3d.squeeze()).sum(axis=1))
     new_3d = pc[idx]
     return new_3d
@@ -152,7 +153,7 @@ for subject in data:
     tar4_cam2_2d = np.array(tuple(map(float, subject[6][1:-2].split(', '))))
 
     # frontal pose: two targets
-    folder_path = 'data/' + SUBJECT_NAME + '/front/'
+    folder_path = '../data/' + SUBJECT_NAME + '/front/'
     camera_poses = read_trajectory(folder_path + "odometry.log")
     T_cam1_base = camera_poses[0].pose
     T_cam2_base = camera_poses[1].pose
@@ -185,7 +186,7 @@ for subject in data:
         pickle.dump(gt_dict, f)
 
     # side pose: one target
-    folder_path = 'data/' + SUBJECT_NAME + '/side/'
+    folder_path = '../data/' + SUBJECT_NAME + '/side/'
     camera_poses = read_trajectory(folder_path + "odometry.log")
     T_cam1_base = camera_poses[0].pose
     T_cam2_base = camera_poses[1].pose

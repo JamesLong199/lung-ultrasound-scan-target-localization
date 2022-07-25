@@ -12,9 +12,11 @@ two_cam_cam1_diff = {'target1': {'x': [], 'y': [], 'z': []}, 'target2': {'x': []
 two_cam_cam2_diff = {'target1': {'x': [], 'y': [], 'z': []}, 'target2': {'x': [], 'y': [], 'z': []},
                      'target4': {'x': [], 'y': [], 'z': []}}
 
+data_path = '../data'
+
 # loop through the data folder
-for SUBJECT_NAME in os.listdir('data'):
-    subject_folder_path = os.path.join('data', SUBJECT_NAME)
+for SUBJECT_NAME in os.listdir(data_path):
+    subject_folder_path = os.path.join(data_path, SUBJECT_NAME)
     if os.path.isfile(subject_folder_path):
         continue
 

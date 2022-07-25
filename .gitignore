@@ -7,3 +7,4 @@
 /final_phase/data/**
 *.pickle
 *.xlsx
+*.pdf

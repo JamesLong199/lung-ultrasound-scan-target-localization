@@ -1,4 +1,4 @@
-# Compute the error mean and std of the two-cam method
+# Compute the position error of the two-cam method
 # Compare the error among three HPR models
 
 import os
@@ -9,18 +9,20 @@ vit_large_err = {'target1': [], 'target2': [], 'target4': []}
 vit_base_err = {'target1': [], 'target2': [], 'target4': []}
 open_pose_err = {'target1': [], 'target2': [], 'target4': []}
 
-for SUBJECT_NAME in os.listdir('data'):
-    subject_folder_path = os.path.join('data', SUBJECT_NAME)
+data_path = '../data'
+
+for SUBJECT_NAME in os.listdir(data_path):
+    subject_folder_path = os.path.join(data_path, SUBJECT_NAME)
     if os.path.isfile(subject_folder_path):
         continue
 
     # frontal points: target 1 & target 2
     front_folder_path = os.path.join(subject_folder_path, 'front')
-    with open(front_folder_path + '/ViTPose_large/final_target.pickle', 'rb') as f:
+    with open(front_folder_path + '/ViTPose_large/final_target_opt.pickle', 'rb') as f:
         vit_large_pred = pickle.load(f)
-    with open(front_folder_path + '/ViTPose_base/final_target.pickle', 'rb') as f:
+    with open(front_folder_path + '/ViTPose_base/final_target_opt.pickle', 'rb') as f:
         vit_base_pred = pickle.load(f)
-    with open(front_folder_path + '/OpenPose/final_target.pickle', 'rb') as f:
+    with open(front_folder_path + '/OpenPose/final_target_opt.pickle', 'rb') as f:
         open_pose_pred = pickle.load(f)
     with open(front_folder_path + '/two_cam_gt.pickle', 'rb') as f:
         gt = pickle.load(f)
@@ -31,11 +33,11 @@ for SUBJECT_NAME in os.listdir('data'):
     gt_tar1, gt_tar2 = gt['target_1'].flatten(), gt['target2_3d'].flatten()
 
     side_folder_path = os.path.join(subject_folder_path, 'side')
-    with open(side_folder_path + '/ViTPose_large/final_target.pickle', 'rb') as f:
+    with open(side_folder_path + '/ViTPose_large/final_target_opt.pickle', 'rb') as f:
         vit_large_pred = pickle.load(f)
-    with open(side_folder_path + '/ViTPose_base/final_target.pickle', 'rb') as f:
+    with open(side_folder_path + '/ViTPose_base/final_target_opt.pickle', 'rb') as f:
         vit_base_pred = pickle.load(f)
-    with open(side_folder_path + '/OpenPose/final_target.pickle', 'rb') as f:
+    with open(side_folder_path + '/OpenPose/final_target_opt.pickle', 'rb') as f:
         open_pose_pred = pickle.load(f)
     with open(side_folder_path + '/two_cam_gt.pickle', 'rb') as f:
         gt = pickle.load(f)
@@ -57,10 +59,14 @@ for SUBJECT_NAME in os.listdir('data'):
                                                                                          gt_tar_list):
         vit_large_err[target].append(np.linalg.norm(vit_large_pred_tar - gt_tar))
         vit_base_err[target].append(np.linalg.norm(vit_base_pred_tar - gt_tar))
+
+        # skip outlier for openpose target 4:
+        if target == 'target4' and (SUBJECT_NAME == 'charles_xu' or SUBJECT_NAME == 'jingyu_wu'):
+            continue
         open_pose_err[target].append(np.linalg.norm(open_pose_pred_tar - gt_tar))
 
 err_dict = {'vit_large_err': vit_large_err, 'vit_base_err': vit_base_err, 'open_pose_err': open_pose_err}
-with open('error_dict.pickle', 'wb') as f:
+with open('error_dict_opt.pickle', 'wb') as f:
     pickle.dump(err_dict, f)
 
 # Compute difference mean and std

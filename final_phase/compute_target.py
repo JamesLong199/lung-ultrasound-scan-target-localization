@@ -15,6 +15,13 @@ parser = argparse.ArgumentParser(description='Compute target')
 parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
 parser.add_argument('--subject_name', type=str, default='John Doe', help='subject name')
 parser.add_argument('--scan_pose', type=str, default='none', help='scan pose')
+parser.add_argument('--target1_r1', type=float, default=0, help='target1_r1')
+parser.add_argument('--target1_r2', type=float, default=0, help='target1_r2')
+parser.add_argument('--target2_r1', type=float, default=0, help='target2_r1')
+parser.add_argument('--target2_r2', type=float, default=0, help='target2_r2')
+parser.add_argument('--target4_r1', type=float, default=0, help='target4_r1')
+parser.add_argument('--target4_r2', type=float, default=0, help='target4_r2')
+
 args = parser.parse_args()
 POSE_MODEL = args.pose_model
 if args.subject_name != 'John Doe':
@@ -62,19 +69,24 @@ def target12_3D(l_shoulder_cam1, l_shoulder_cam2, r_shoulder_cam1, r_shoulder_ca
     target = X3 + ratio_2 * np.linalg.norm(X2 - X1) * t2
 
     # print("target before pose process:\n", target)
-    target = triangulation_post_process(target)
+    target = triangulation_post_process(target, verbose=True)
 
     position_data['front'] = [X1, X2, t2]
 
     return target
 
-def triangulation_post_process(original_3d):
+def triangulation_post_process(original_3d, verbose=False):
     '''
     Use the original x&y values to find a closest point in the point cloud.
     Use the new point's z value as the new z, combined with the original x&y.
     :param original_3d: The original 3D coordinate from triangulation
     '''
+    if verbose:
+        print("original_3d: ", original_3d)
     idx = np.argmin(np.square(coordinates[:, 0:2] - original_3d.squeeze()[0:2]).sum(axis=1))
+    if verbose:
+        new_3d = coordinates[idx]
+        print("new_3d: ", new_3d)
     new_z = coordinates[idx, 2]
     new_3d = np.vstack((original_3d[0:2], [new_z]))
     return new_3d
@@ -290,9 +302,9 @@ position_data = {}  # store
 
 if SCAN_POSE == 'front':
     target1 = target12_3D(l_shoulder1, l_shoulder2, r_shoulder1, r_shoulder2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=0.3, ratio_2=0.1)
+                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target1_r1, ratio_2=args.target1_r2)
     target2 = target12_3D(l_shoulder1, l_shoulder2, r_shoulder1, r_shoulder2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=0.3, ratio_2=0.55)
+                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target2_r1, ratio_2=args.target2_r2)
 
     target1_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3,:] @ to_homog(target1)).squeeze()
     target1_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3,:] @ to_homog(target1)).squeeze()
@@ -300,8 +312,8 @@ if SCAN_POSE == 'front':
     target2_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3, :] @ to_homog(target2)).squeeze()
     target2_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3, :] @ to_homog(target2)).squeeze()
 
-    # draw_front_target_point(target1_2d_cam1, target1_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
-    # draw_front_target_point(target2_2d_cam1, target2_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
+    draw_front_target_point(target1_2d_cam1, target1_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
+    draw_front_target_point(target2_2d_cam1, target2_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
 
     # print("target1 3D:\n", target1)
     # print("target2 3D:\n", target2)
@@ -311,20 +323,26 @@ if SCAN_POSE == 'front':
 
 elif SCAN_POSE == 'side':
     target4 = target4_3D(r_shoulder1, r_shoulder2, r_hip1, r_hip2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2)
+                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target4_r1, ratio_2=args.target4_r2)
     # print("target4 3D: \n", target4)
 
     target4_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3, :] @ to_homog(target4)).squeeze()
     target4_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3, :] @ to_homog(target4)).squeeze()
 
-    # draw_side_target_point(target4_2d_cam1, target4_2d_cam2, r_hip1, r_shoulder1, r_hip2, r_shoulder2)
+    draw_side_target_point(target4_2d_cam1, target4_2d_cam2, r_hip1, r_shoulder1, r_hip2, r_shoulder2)
 
     final_target_list.append(target4)
 
 
-with open(folder_path + POSE_MODEL + '/final_target.pickle', 'wb') as f:
-    pickle.dump(final_target_list, f)
-
-with open(folder_path + POSE_MODEL + '/position_data.pickle', 'wb') as f:
-    pickle.dump(position_data, f)
-
+# with open(folder_path + POSE_MODEL + '/final_target.pickle', 'wb') as f:
+#     pickle.dump(final_target_list, f)
+#
+# with open(folder_path + POSE_MODEL + '/position_data.pickle', 'wb') as f:
+#     pickle.dump(position_data, f)
+#
+# results with optimized ratio parameters based on planar euclidean distance
+# with open(folder_path + POSE_MODEL + '/final_target_opt.pickle', 'wb') as f:
+#     pickle.dump(final_target_list, f)
+#
+# with open(folder_path + POSE_MODEL + '/position_data_opt.pickle', 'wb') as f:
+#     pickle.dump(position_data, f)
