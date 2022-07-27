@@ -1,1 +1,0 @@
-Place test data: /images/ & /labels/

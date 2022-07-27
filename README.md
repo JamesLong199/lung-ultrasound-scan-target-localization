@@ -1,22 +1,19 @@
-# Autonomous-Transducer-Project
-## Timeline
-### Phase 1
-- Camera calibration
-- Apriltag detection & localization
-  - Compare Apriltag detection results to measured values
-### Phase 2
-- UR3 robot arm navigation with Apriltag
-  - Attach camera to robot arm
-  - navigate robot arm tool to the location of Apriltag
-### Phase 3
-- Multiview RGBD image integration with IntelRealsense 
-  - Use Apriltag to compute relative transformation between different camera views
-### Phase 4
-- UR3 robot arm navigation with 3D point cloud data
-  - Move robot arm tool to a target point in given 3D point cloud
-  - Coordinate conversion
-    - Robot base -- Robot tool -- Camera -- Scene point
-- Automatic path planning
-  - Given start and end points on a 3D surface, plan a path of scan points along the surface
-    
+# Autonomous Transducer Positioning System for Lung Ultrasound Scan
 
+### 9 scan target locations (we focus on target 1,2,4):
+<img src="images/target_scan_locations.png" width="400"/>
+
+### Apparatus setup:
+<img src='images/apparatus.png' width="500" />
+
+### Pipeline:
+<img src='images/pipeline.png' width="700" />
+
+## Contributors
+| Name  | Email |
+| ------------- | ------------- |
+| Jianzhi Long  | jlong@ucsd.edu |
+| Jicang Cai  | j1cai@ucsd.edu  |
+
+## Acknowledge
+We acknowledge the excellent implementation from [ViTPose](https://github.com/ViTAE-Transformer/ViTPose), [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose), and Rope Robotics (Denmark).

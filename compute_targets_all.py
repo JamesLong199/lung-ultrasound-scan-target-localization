@@ -1,4 +1,4 @@
-# Compute 3 targets for all subjects using 3 HPE models
+# Compute 3 targets for all subjects using all 3 HPE models
 
 import os
 import subprocess
@@ -18,13 +18,10 @@ ratios = {
 
 if __name__ == '__main__':
 
-    data_path = 'final_phase/data'
+    data_path = 'main_project/data'
 
     # loop through the data folder
     for SUBJECT_NAME in os.listdir(data_path):
-        if SUBJECT_NAME != 'henry_kuang':
-            continue
-
         print("subject: ", SUBJECT_NAME)
         subject_folder_path = os.path.join(data_path, SUBJECT_NAME)
         if os.path.isfile(subject_folder_path):
@@ -39,10 +36,9 @@ if __name__ == '__main__':
 
             # loop through three HPE models to compute targets
             for POSE_MODEL in ['OpenPose', 'ViTPose_base', 'ViTPose_large']:
-            # for POSE_MODEL in ['ViTPose_large']:
                 print("pose model: ", POSE_MODEL)
                 subprocess.run([
-                    "python", "final_phase/compute_target.py",
+                    "python", "main_project/compute_target.py",
                     "--pose_model={}".format(POSE_MODEL),
                     "--subject_name={}".format(SUBJECT_NAME),
                     "--scan_pose={}".format(SCAN_POSE),
@@ -53,5 +49,3 @@ if __name__ == '__main__':
                     "--target4_r1", str(ratios[POSE_MODEL]['target4'][0]),
                     "--target4_r2", str(ratios[POSE_MODEL]['target4'][1])
                 ])
-
-        # break

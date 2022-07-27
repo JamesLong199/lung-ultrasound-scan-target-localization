@@ -1,19 +1,17 @@
-# Run `ViTPose_UR_move.py`. Construct 3D point cloud, compute target normal/orientation, move the robot arm.
+# The entire pipeline of one experiment trial
 
 import subprocess
-from final_phase.subject_info import SUBJECT_NAME, SCAN_POSE
+from main_project.subject_info import SUBJECT_NAME, SCAN_POSE
 
 POSE_MODEL = 'OpenPose'  # ViTPose_large, ViTPose_base, OpenPose
 
 if __name__ == '__main__':
-    # # Capture two color/depth images with two Intel Realsense depth camera
-    # subprocess.run([
-    #                 "python", "final_phase/ViTPose_UR_collect_data.py",
-    #                 ])
-    #
-    #
-    # Run pose estimation on the two color images, save shoulders & hips keypoints.
-    # ViTPose large:
+    # Capture two color/depth images with two Intel Realsense depth cameras
+    subprocess.run([
+                    "python", "main_project/collect_data.py",
+                    ])
+
+    # Run human pose estimation on the two color images, save shoulders & hips keypoints.
     if POSE_MODEL == 'ViTPose_large':
         subprocess.run([
                         "python", "ViTPose/demo/top_down_img_demo_with_mmdet.py",
@@ -39,37 +37,27 @@ if __name__ == '__main__':
         ])
 
     else:
-        image_dir = 'final_phase/data/{}/{}/color_images'.format(SUBJECT_NAME, SCAN_POSE)
-        write_images = 'final_phase/data/{}/{}/OpenPose/output_images/'.format(SUBJECT_NAME, SCAN_POSE)
-        write_json = 'final_phase/data/{}/{}/OpenPose/keypoints/'.format(SUBJECT_NAME, SCAN_POSE)
+        image_dir = 'main_project/data/{}/{}/color_images'.format(SUBJECT_NAME, SCAN_POSE)
+        write_images = 'main_project/data/{}/{}/OpenPose/output_images/'.format(SUBJECT_NAME, SCAN_POSE)
+        write_json = 'main_project/data/{}/{}/OpenPose/keypoints/'.format(SUBJECT_NAME, SCAN_POSE)
 
         subprocess.run([
-            "python", "final_phase/openpose_python.py",
+            "python", "main_project/openpose_python.py",
             "--image_dir", image_dir, "--write_images", write_images, "--write_json", write_json
         ])
 
         subprocess.run([
-            "python", "final_phase/json2pickle.py"
+            "python", "main_project/json2pickle.py"
         ])
-    #
-    #
-    # # nipple detection
-    # # run DeepNipple on the two color images, save nipple keypoints.
-    # subprocess.run([
-    #                 "python", "DeepNipple/base_deepnipple.py",
-    #                 "--mode=bbox",
-    #                 "--show=True",
-    #                 "--pose_model={}".format(POSE_MODEL)
-    #                 ])
 
     # Compute target coordinates, and save them
     subprocess.run([
-                    "python", "final_phase/compute_target.py",
+                    "python", "main_project/compute_target.py",
                     "--pose_model={}".format(POSE_MODEL)
                     ])
 
-    # # Move robot
-    # subprocess.run([
-    #                 "python", "final_phase/ViTPose_UR_move.py",
-    #                 "--pose_model={}".format(POSE_MODEL)
-    #                ])
+    # Move robot
+    subprocess.run([
+                    "python", "main_project/UR_move.py",
+                    "--pose_model={}".format(POSE_MODEL)
+                   ])

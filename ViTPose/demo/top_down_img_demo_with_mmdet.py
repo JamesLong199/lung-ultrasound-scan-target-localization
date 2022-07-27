@@ -111,7 +111,7 @@ def main():
     else:
         dataset_info = DatasetInfo(dataset_info)
 
-    folder_path = 'final_phase/data/' + args.subject_name + '/' + args.scan_pose + '/'
+    folder_path = 'main_project/data/' + args.subject_name + '/' + args.scan_pose + '/'
     img_root = folder_path + "color_images"
     os.chdir(img_root)
     for i, file in enumerate(glob.glob("*.jpg")):

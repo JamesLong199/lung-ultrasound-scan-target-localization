@@ -4,7 +4,7 @@
 /openpose_lib/
 *.pth
 *.pkl
-/final_phase/data/**
+/main_project/data/**
 *.pickle
 *.xlsx
 *.pdf
