@@ -1,13 +1,13 @@
 # Autonomous Transducer Positioning System for Lung Ultrasound Scan
 
 ### 9 scan target locations (we focus on target 1,2,4):
-<img src="images/target_scan_locations.png" width="400"/>
+<img src="images/target_scan_locations.png" width="450"/>
 
 ### Apparatus setup:
-<img src='images/apparatus.png' width="500" />
+<img src='images/apparatus.png' width="450" />
 
 ### Pipeline:
-<img src='images/pipeline.png' width="700" />
+<img src='images/pipeline.png' width="800" />
 
 ## Contributors
 | Name  | Email |
