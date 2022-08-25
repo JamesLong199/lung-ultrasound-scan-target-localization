@@ -4,8 +4,8 @@ authors:
 - family-names: "Long"
   given-names: "Jianzhi"
   orcid: "https://orcid.org/0000-0000-0000-0000"
-- family-names: "Jicang"
-  given-names: "Cai"
+- family-names: "Cai"
+  given-names: "Jicang"
   orcid: "https://orcid.org/0000-0000-0000-0000"
 title: "Autonomous-Transducer-Project"
 version: 1.0.0
