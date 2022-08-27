@@ -8,7 +8,7 @@ import open3d as o3d
 from utils.pose_conversion import *
 from utils.trajectory_io import *
 
-data_path = 'data'
+data_path = '../data'
 
 depth_cam1_intr = np.array([
     [603.98217773, 0, 310.87359619],
