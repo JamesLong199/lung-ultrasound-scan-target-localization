@@ -1,13 +1,15 @@
-# Autonomous Transducer Positioning System for Lung Ultrasound Scan
+# Localizing Scan Targets from Human Pose for Autonomous Lung Ultrasound Imaging
+
+(Under construction...)
 
 ### 9 scan target locations (we focus on target 1,2,4):
-<img src="images/target_scan_locations.png" width="450"/>
+<img src="homepage/target_scan_locations.png" width="450"/>
 
 ### Apparatus setup:
-<img src='images/apparatus.png' width="450" />
+<img src='homepage/apparatus.png' width="450" />
 
 ### Pipeline:
-<img src='images/pipeline.png' width="800" />
+<img src='homepage/pipeline.png' width="800" />
 
 ## Contributors
 | Name  | Email |

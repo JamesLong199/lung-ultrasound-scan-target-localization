@@ -93,13 +93,13 @@ def main():
     start_time = time.time()
     det_model = init_detector(
         args.det_config, args.det_checkpoint, device=args.device.lower())
-    # print("load detection model: {:.3f} s".format(time.time() - start_time))
+    print("load detection model: {:.3f} s".format(time.time() - start_time))
     # build the pose model from a config file and a checkpoint file
 
     start_time = time.time()
     pose_model = init_pose_model(
         args.pose_config, args.pose_checkpoint, device=args.device.lower())
-    # print("load pose estimation model: {:.3f} s".format(time.time() - start_time))
+    print("load pose estimation model: {:.3f} s".format(time.time() - start_time))
 
     dataset = pose_model.cfg.data['test']['type']
     dataset_info = pose_model.cfg.data['test'].get('dataset_info', None)
@@ -111,22 +111,21 @@ def main():
     else:
         dataset_info = DatasetInfo(dataset_info)
 
-    folder_path = 'main_project/data/' + args.subject_name + '/' + args.scan_pose + '/'
+    folder_path = 'src/data/' + args.subject_name + '/' + args.scan_pose + '/'
     img_root = folder_path + "color_images"
     os.chdir(img_root)
     for i, file in enumerate(glob.glob("*.jpg")):
         image_name = os.path.join(file)
-        # print(image_name)
 
         # test a single image, the resulting box is (x1, y1, x2, y2)
         start_time = time.time()
         mmdet_results = inference_detector(det_model, image_name)
-        # print("detection time: {:.3f} s".format(time.time()-start_time))
+        print("detection time: {:.3f} s".format(time.time()-start_time))
 
         # keep the person class bounding boxes.
         start_time = time.time()
         person_results = process_mmdet_results(mmdet_results, args.det_cat_id)
-        # print("pose estimation time: {:.3f} s".format(time.time() - start_time))
+        print("pose estimation time: {:.3f} s".format(time.time() - start_time))
 
         # test a single image, with a list of bboxes.
 

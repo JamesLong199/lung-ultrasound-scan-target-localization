@@ -1,14 +1,14 @@
-# The entire pipeline of one experiment trial
+# The entire pipeline of one experimental trial
 
 import subprocess
-from main_project.subject_info import SUBJECT_NAME, SCAN_POSE
+from src.subject_info import SUBJECT_NAME, SCAN_POSE
 
-POSE_MODEL = 'OpenPose'  # ViTPose_large, ViTPose_base, OpenPose
+POSE_MODEL = 'ViTPose_large'  # ViTPose_large, ViTPose_base, OpenPose
 
 if __name__ == '__main__':
     # Capture two color/depth images with two Intel Realsense depth cameras
     subprocess.run([
-                    "python", "main_project/collect_data.py",
+                    "python", "src/collect_data.py",
                     ])
 
     # Run human pose estimation on the two color images, save shoulders & hips keypoints.
@@ -37,27 +37,27 @@ if __name__ == '__main__':
         ])
 
     else:
-        image_dir = 'main_project/data/{}/{}/color_images'.format(SUBJECT_NAME, SCAN_POSE)
-        write_images = 'main_project/data/{}/{}/OpenPose/output_images/'.format(SUBJECT_NAME, SCAN_POSE)
-        write_json = 'main_project/data/{}/{}/OpenPose/keypoints/'.format(SUBJECT_NAME, SCAN_POSE)
+        image_dir = 'src/data/{}/{}/color_images'.format(SUBJECT_NAME, SCAN_POSE)
+        write_images = 'src/data/{}/{}/OpenPose/output_images/'.format(SUBJECT_NAME, SCAN_POSE)
+        write_json = 'src/data/{}/{}/OpenPose/keypoints/'.format(SUBJECT_NAME, SCAN_POSE)
 
         subprocess.run([
-            "python", "main_project/openpose_python.py",
+            "python", "src/openpose_python.py",
             "--image_dir", image_dir, "--write_images", write_images, "--write_json", write_json
         ])
 
         subprocess.run([
-            "python", "main_project/json2pickle.py"
+            "python", "src/json2pickle.py"
         ])
 
     # Compute target coordinates, and save them
     subprocess.run([
-                    "python", "main_project/compute_target.py",
+                    "python", "src/compute_target.py",
                     "--pose_model={}".format(POSE_MODEL)
                     ])
 
     # Move robot
     subprocess.run([
-                    "python", "main_project/UR_move.py",
+                    "python", "src/UR_move.py",
                     "--pose_model={}".format(POSE_MODEL)
                    ])
