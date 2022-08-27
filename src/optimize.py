@@ -144,7 +144,7 @@ if __name__ == '__main__':
         with open(subject_folder_path + '/' + scan_pose + '/two_cam_gt.pickle', 'rb') as f:
             ground_truth = pickle.load(f)
         target1_GT.append(ground_truth['target_1'])
-        target2_GT.append(ground_truth['target2_3d'])
+        target2_GT.append(ground_truth['target_2'])
 
         # skip outlier for openpose target 4:
         if POSE_MODEL == 'OpenPose' and (SUBJECT_NAME == 'charles_xu' or SUBJECT_NAME == 'jingyu_wu'):

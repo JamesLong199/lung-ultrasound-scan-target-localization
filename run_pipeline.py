@@ -1,4 +1,4 @@
-# The entire pipeline of one experimental trial
+# The entire pipeline of one trial
 
 import subprocess
 from src.subject_info import SUBJECT_NAME, SCAN_POSE

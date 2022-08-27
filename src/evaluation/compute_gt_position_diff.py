@@ -1,5 +1,4 @@
-# Compute the ground-truth difference between two different methods:
-# It wasn't used in our project in the end.
+# Compute the ground-truth difference between three different methods:
 
 import os
 import pickle
