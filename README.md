@@ -1,7 +1,7 @@
 <h1 align="center">Localizing Scan Targets from Human Pose for Autonomous Lung Ultrasound Imaging</h1>
 
 <h4 align="center">This is the official repository of the paper <a href="">Localizing Scan Targets from Human Pose for Autonomous Lung Ultrasound Imaging</a>.</h4>
-<h5 align="center"><em>Jianzhi Long<sup>1&#8727;</sup>, Jicang Cai<sup>1&#8727;</sup>, Abdullah F. Al-Battal<sup>1</sup>, Shiwei Jin<sup>1</sup>, Truong Nguyen<sup>1</sup>, Jing Zhang<sup>2</sup>, Dacheng Tao<sup>3</sup></em></h5>
+<h5 align="center"><em>Jianzhi Long<sup>1&#8727;</sup>, Jicang Cai<sup>1&#8727;</sup>, Abdullah F. Al-Battal<sup>1</sup>, Shiwei Jin<sup>1</sup>, Jing Zhang<sup>2</sup>, Dacheng Tao<sup>3</sup>, Truong Nguyen<sup>1</sup></em></h5>
 <h6 align="center">1 University of California San Diego, USA; 2 The University of Sydney, Australia; 3 JD Explore Academy, Beijing, China </h6>
 
 <p align="center">
