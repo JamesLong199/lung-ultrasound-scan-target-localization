@@ -49,13 +49,13 @@ https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-
 
 2. Go into the repository
 
-    `cd Autonomous-Transducer-Project`;
+    `cd Autonomous-Transducer-Project`
 
 3. Create conda environment and activate
 
-    `conda create -n Auto_US python=3.7`,
+    `conda create -n Auto_US python=3.7`
 
-    `conda activate Auto_US`;
+    `conda activate Auto_US`
 
 4. Install dependencies
 
