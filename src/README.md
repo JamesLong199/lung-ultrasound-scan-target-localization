@@ -16,6 +16,3 @@
 
 1. Run `python evaluation/compute_gt_position.py` to compute the ground-truth 3D positions:
 2. Run `python optimize.py` to optimize the ratio parameters for both front and side postures.
-
-## Note:
-- Make sure to download ViTPose models in advance from [ViTPose](https://github.com/ViTAE-Transformer/ViTPose).
