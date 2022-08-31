@@ -7,13 +7,14 @@
 <p align="center">
   <a href="#introduction">Introduction</a> |
   <a href="#scan-targets">Scan Targets</a> |
-  <a href="#system-components">System Components</a> |
+  <a href="#system-setup">System Setup</a> |
   <a href="#pipeline">Pipeline</a> |
-  <a href="#how-to-run-the-code">Run Code</a> |
-  <a href="#results-demo">Results Demo</a> |
+  <a href="#running-the-code">Run Code</a> |
+  <a href="#demo-video">Results Demo</a> |
+  <a href="#installation">Installation</a> |
   <a href="#contact-info">Contact Info</a> |
+  <a href="#acknowledge">Acknowledge</a> |
   <a href="#statement">Statement</a> |
-  <a href="#acknowledge">Acknowledge</a>
 </p>
 
 ## Introduction
@@ -26,24 +27,49 @@ We have released the code for [implementation](src) of our proposed [pipeline](#
 <img src="homepage/target_scan_locations.png" width="60%"/>
 In our project, we focus on localizing scan targets 1, 2, and 4.
 
-## System Components:
+## System Setup:
 <img src='homepage/apparatus.png' width="60%" />
 
 ## Pipeline:
-<img src='homepage/pipeline.png' width="60%" />
+<img src='homepage/pipeline.png' width="90%" />
 
-## How to Run the Code
+## Running the Code
 Detailed instructions of running the code are included in other `README.md` files:
 - To perform one scanning trial, see <a href="https://github.com/JamesLong199/Autonomous-Transducer-Project/tree/main/src">`src/README.md`</a>.
 - To evaluate results, see <a href="https://github.com/JamesLong199/Autonomous-Transducer-Project/tree/main/src/evaluation">`src/evaluation/README.md`</a>.
 
-## Results Demo 
+## Demo Video 
 https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-8098-28f5038e718b.mp4
 
 ## Installation
-- URBasic 
-- ViTPose
-- OpenPose
+
+1. Clone this repository
+
+    `git clone https://github.com/JamesLong199/Autonomous-Transducer-Project.git`;
+
+2. Go into the repository
+
+    `cd Autonomous-Transducer-Project`;
+
+3. Create conda environment and activate
+
+    `conda create -n Auto_US python=3.7`,
+
+    `conda activate Auto_US`;
+
+4. Install dependencies
+
+    `pip install -r requirements.txt`
+
+5. Download [ViTPose](https://github.com/ViTAE-Transformer/ViTPose) models and use the corresponding config file. Place the models in `ViTPose/models`. We use 
+   1. ViTPose-L (COCO+AIC+MPII+CrowdPose)
+   2. ViTPose-B (classic decoder, COCO)
+
+6. Download detector model for ViTPose. Place the model in `ViTPose/models`. We use
+   1. [YOLOv3](https://github.com/open-mmlab/mmdetection/tree/master/configs/yolo) (DarkNet-53, 320, 273e)
+
+
+Our code has been tested with Python 3.7.11 on Windows 11.
 
 ## Contact Info
 | Name  | Email |
@@ -55,3 +81,4 @@ https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-
 We acknowledge the excellent implementation from [ViTPose](https://github.com/ViTAE-Transformer/ViTPose), [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose), and Rope Robotics (Denmark).
 
 ## Statement
+Will become available once the paper is on arxiv.

@@ -2,7 +2,6 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import os
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
