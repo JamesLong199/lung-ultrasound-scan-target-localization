@@ -45,7 +45,7 @@ https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-
 
 1. Clone this repository
 
-    `git clone https://github.com/JamesLong199/Autonomous-Transducer-Project.git`;
+    `git clone https://github.com/JamesLong199/Autonomous-Transducer-Project.git`
 
 2. Go into the repository
 
