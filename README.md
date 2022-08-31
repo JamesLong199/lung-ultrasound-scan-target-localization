@@ -10,7 +10,7 @@
   <a href="#system-setup">System Setup</a> |
   <a href="#pipeline">Pipeline</a> |
   <a href="#running-the-code">Run Code</a> |
-  <a href="#demo-video">Results Demo</a> |
+  <a href="#demo-video">Demo Video</a> |
   <a href="#installation">Installation</a> |
   <a href="#contact-info">Contact Info</a> |
   <a href="#acknowledge">Acknowledge</a> |
@@ -21,7 +21,7 @@
 This repository contains the code, experiment results and a video demo for the paper Localizing Scan Targets from Human Pose for
 Autonomous Lung Ultrasound Imaging. Scan target localization is defined as moving the Ultrasound (US) transducer probe to the proximity of the target scan location. We combined a human pose estimation model with a specially designed interpolation model to predict the lung ultrasound scan targets, while multi-view stereo vision is deployed to enhance the accuracy of 3D target localization.
 
-We have released the code for [implementation](src) of our proposed [pipeline](#Pipeline) with the [system setup](#SystemSetup) shown below, as well as the [evaluation](src/evaluation) of the system performance. We also included a short [video demo](#DemoVideo) of localizing the scan target on a human subject to show the system in action.  
+We have released the code for [implementation](src) of our proposed [pipeline](#Pipeline) with the [system setup](#system-setup) shown below, as well as the [evaluation](src/evaluation) of the system performance. We also included a short [video demo](#demo-video) of localizing the scan target on a human subject to show the system in action.  
 
 ## Scan Targets:
 <img src="homepage/target_scan_locations.png" width="60%"/>
@@ -31,7 +31,7 @@ In our project, we focus on localizing scan targets 1, 2, and 4.
 <img src='homepage/apparatus.png' width="60%" />
 
 ## Pipeline:
-<img src='homepage/pipeline.png' width="90%" />
+<img src='homepage/pipeline.png' width="100%" />
 
 ## Running the Code
 Detailed instructions of running the code are included in other `README.md` files:
