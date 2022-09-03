@@ -1,4 +1,4 @@
-# the original openpose_lib script
+# the original openpose script
 # command line argument:
 # --image_dir: the folder that contains the input images to be read in
 # --write_images: the folder to store the image output with poses
@@ -20,8 +20,8 @@ try:
     dir_path = os.path.dirname(os.path.realpath(__file__))
     try:
         # Change these variables to point to the correct folder (Release/x64 etc.)
-        sys.path.append(dir_path + '/../openpose_lib/bin/python/openpose/Release');
-        os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../openpose_lib/x64/Release;' +  dir_path + '/../openpose_lib/bin;'
+        sys.path.append(dir_path + '/../openpose/bin/python/openpose/Release');
+        os.environ['PATH']  = os.environ['PATH'] + ';' + dir_path + '/../openpose/x64/Release;' +  dir_path + '/../openpose/bin;'
         import pyopenpose as op
     except ImportError as e:
         print('Error: OpenPose library could not be found. Did you enable `BUILD_PYTHON` in CMake and have this Python script in the right folder?')
@@ -31,9 +31,9 @@ try:
     parser = argparse.ArgumentParser()
     args = parser.parse_known_args()
 
-    # Custom Params (refer to include/openpose_lib/flags.hpp for more parameters)
+    # Custom Params (refer to include/openpose/flags.hpp for more parameters)
     params = dict()
-    params["model_folder"] = "openpose_lib/models/"
+    params["model_folder"] = "openpose/models/"
 
     # Add others in path?
     for i in range(0, len(args[1])):

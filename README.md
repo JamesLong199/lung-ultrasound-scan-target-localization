@@ -68,6 +68,7 @@ https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-
 6. Download detector model for ViTPose. Place the model in `ViTPose/models`. We use
    1. [YOLOv3](https://github.com/open-mmlab/mmdetection/tree/master/configs/yolo) (DarkNet-53, 320, 273e)
 
+7. To use OpenPose, follow the instructions on the [official OpenPose documentations](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/installation/0_index.md) to download the Windows Portable Demo. Place the `openpose` folder in the project's root directory.
 
 Our code has been tested with Python 3.7.11 on Windows 11.
 
