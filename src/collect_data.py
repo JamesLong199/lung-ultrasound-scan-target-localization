@@ -15,7 +15,7 @@ from subject_info import SUBJECT_NAME, SCAN_POSE
 # ... from Camera 1
 pipeline_1 = rs.pipeline()
 config_1 = rs.config()
-config_1.enable_device('839212060064')
+config_1.enable_device('839212060064')  # change to your devices
 config_1.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 config_1.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
@@ -54,6 +54,12 @@ cam2_intr = np.array([[color_intrinsics_2.fx, 0, color_intrinsics_2.ppx],
 with open(folder_path + 'intrinsics/cam_2_intrinsics.pickle', 'wb') as f:
     pickle.dump(cam2_intr, f)
 
+# Create an align object
+# rs.align allows us to perform alignment of depth frames to others frames
+# The "align_to" is the stream type to which we plan to align depth frames.
+align_to = rs.stream.color
+align = rs.align(align_to)
+
 # adjust lightness
 exposure_1 = 156
 exposure_2 = 250
@@ -67,8 +73,10 @@ try:
         sensor_1 = profile_1.get_device().query_sensors()[1]
         sensor_1.set_option(rs.option.exposure, exposure_1)
         frames_1 = pipeline_1.wait_for_frames()
-        depth_frame_1 = frames_1.get_depth_frame()
-        color_frame_1 = frames_1.get_color_frame()
+        # Align the depth frame to color frame
+        aligned_frames_1 = align.process(frames_1)
+        depth_frame_1 = aligned_frames_1.get_depth_frame()
+        color_frame_1 = aligned_frames_1.get_color_frame()
         if not depth_frame_1 or not color_frame_1:
             continue
         else:
@@ -87,8 +95,10 @@ try:
         sensor_2 = profile_2.get_device().query_sensors()[1]
         sensor_2.set_option(rs.option.exposure, exposure_2)
         frames_2 = pipeline_2.wait_for_frames()
-        depth_frame_2 = frames_2.get_depth_frame()
-        color_frame_2 = frames_2.get_color_frame()
+        # Align the depth frame to color frame
+        aligned_frames_2 = align.process(frames_2)
+        depth_frame_2 = aligned_frames_2.get_depth_frame()
+        color_frame_2 = aligned_frames_2.get_color_frame()
         if not depth_frame_2 or not color_frame_2:
             continue
         else:
