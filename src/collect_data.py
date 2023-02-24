@@ -15,14 +15,14 @@ from subject_info import SUBJECT_NAME, SCAN_POSE
 # ... from Camera 1
 pipeline_1 = rs.pipeline()
 config_1 = rs.config()
-config_1.enable_device('839212060064')  # change to your devices
+config_1.enable_device('839112060979')  # change to your device
 config_1.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 config_1.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
 # ... from Camera 2
 pipeline_2 = rs.pipeline()
 config_2 = rs.config()
-config_2.enable_device('007522060984')
+config_2.enable_device('007522060984')  # change to your device
 config_2.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
 config_2.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
@@ -34,25 +34,39 @@ pipeline_2.start(config_2)
 profile_1 = pipeline_1.get_active_profile()
 color_profile_1 = rs.video_stream_profile(profile_1.get_stream(rs.stream.color))
 color_intrinsics_1 = color_profile_1.get_intrinsics()
-cam1_intr = np.array([[color_intrinsics_1.fx, 0, color_intrinsics_1.ppx],
+cam1_color_intr = np.array([[color_intrinsics_1.fx, 0, color_intrinsics_1.ppx],
                  [0, color_intrinsics_1.fy, color_intrinsics_1.ppy],
+                 [0, 0, 1]])
+depth_profile_1 = rs.video_stream_profile(profile_1.get_stream(rs.stream.depth))
+depth_intrinsics_1 = depth_profile_1.get_intrinsics()
+cam1_depth_intr = np.array([[depth_intrinsics_1.fx, 0, depth_intrinsics_1.ppx],
+                 [0, depth_intrinsics_1.fy, depth_intrinsics_1.ppy],
                  [0, 0, 1]])
 
 folder_path = 'src/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
 
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'wb') as f:
-    pickle.dump(cam1_intr, f)
+    pickle.dump(cam1_color_intr, f)
+with open(folder_path + 'intrinsics/cam_1_depth_intr.pickle', 'wb') as f:
+    pickle.dump(cam1_depth_intr, f)
 
 # get camera 2 intrinsic parameters
 profile_2 = pipeline_2.get_active_profile()
 color_profile_2 = rs.video_stream_profile(profile_2.get_stream(rs.stream.color))
 color_intrinsics_2 = color_profile_2.get_intrinsics()
-cam2_intr = np.array([[color_intrinsics_2.fx, 0, color_intrinsics_2.ppx],
+cam2_color_intr = np.array([[color_intrinsics_2.fx, 0, color_intrinsics_2.ppx],
                  [0, color_intrinsics_2.fy, color_intrinsics_2.ppy],
+                 [0, 0, 1]])
+depth_profile_2 = rs.video_stream_profile(profile_2.get_stream(rs.stream.depth))
+depth_intrinsics_2 = depth_profile_2.get_intrinsics()
+cam2_depth_intr = np.array([[depth_intrinsics_2.fx, 0, depth_intrinsics_2.ppx],
+                 [0, depth_intrinsics_2.fy, depth_intrinsics_2.ppy],
                  [0, 0, 1]])
 
 with open(folder_path + 'intrinsics/cam_2_intrinsics.pickle', 'wb') as f:
-    pickle.dump(cam2_intr, f)
+    pickle.dump(cam2_color_intr, f)
+with open(folder_path + 'intrinsics/cam_2_depth_intr.pickle', 'wb') as f:
+    pickle.dump(cam2_depth_intr, f)
 
 # Create an align object
 # rs.align allows us to perform alignment of depth frames to others frames
@@ -61,7 +75,7 @@ align_to = rs.stream.color
 align = rs.align(align_to)
 
 # adjust lightness
-exposure_1 = 156
+exposure_1 = 250
 exposure_2 = 250
 
 try:

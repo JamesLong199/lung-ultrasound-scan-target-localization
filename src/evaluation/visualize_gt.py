@@ -36,7 +36,7 @@ if __name__ == '__main__':
             continue
 
         scan_pose = 'side'
-        with open(subject_folder_path + '/' + scan_pose + '/two_cam_gt.pickle', 'rb') as f:
+        with open(subject_folder_path + '/' + scan_pose + '/cam_2_gt.pickle', 'rb') as f:
             ground_truth = pickle.load(f)
         target4_GT = ground_truth['target_4']
 
@@ -60,10 +60,10 @@ if __name__ == '__main__':
         draw_target_point(subject_folder_path + '/' + scan_pose, target4_2d_cam1, target4_2d_cam2)
 
         scan_pose = 'front'
-        with open(subject_folder_path + '/' + scan_pose + '/two_cam_gt.pickle', 'rb') as f:
+        with open(subject_folder_path + '/' + scan_pose + '/cam_2_gt.pickle', 'rb') as f:
             ground_truth = pickle.load(f)
         target1_GT = ground_truth['target_1']
-        target2_GT = ground_truth['target2_3d']
+        target2_GT = ground_truth['target_2']
 
         # read RGB intrinsics
         with open(subject_folder_path + '/' + scan_pose + '/intrinsics/cam_1_intrinsics.pickle', 'rb') as f:

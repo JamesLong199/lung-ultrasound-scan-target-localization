@@ -21,3 +21,7 @@
 - `compute_target_normal.py`: compute the predicted target normal vector, based on the predicted target positions.
 - `compute_position_error.py`: compute 3D position error, by the euclidean distance between the predicted position and the ground-truth position.
 - `compute_normal_error.py`: compute 3D orientation error, by the angle difference between the predicted normal vector and the ground-truth normal vector.
+
+### K-fold Evaluation:
+- `k_fold_success_rate.py`: Compute success rate mean & std for all thresholds with K-fold validation.
+- `k_fold_validation.py`: K-fold cross validation for the ratio model

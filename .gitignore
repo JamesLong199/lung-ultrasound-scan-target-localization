@@ -9,3 +9,4 @@
 *.xlsx
 *.pdf
 /src/figure/
+*.json

@@ -56,8 +56,8 @@ for SUBJECT_NAME in os.listdir(data_path):
             two_cam_cam2_diff[target][axis].append(two_cam_tar[i] - cam2_tar[i])
 
 gt_diff_dict = {'cam1_cam2_diff': cam1_cam2_diff, 'two_cam_cam1_diff': two_cam_cam1_diff, 'two_cam_cam2_diff': two_cam_cam2_diff}
-with open('gt_diff.pickle', 'wb') as f:
-    pickle.dump(gt_diff_dict, f)
+# with open('gt_diff.pickle', 'wb') as f:
+#     pickle.dump(gt_diff_dict, f)
 
 # Compute difference mean and std
 for target in cam1_cam2_diff.keys():

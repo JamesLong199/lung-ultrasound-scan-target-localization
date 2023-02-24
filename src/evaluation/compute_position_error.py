@@ -30,7 +30,7 @@ for SUBJECT_NAME in os.listdir(data_path):
     vit_large_pred_tar1, vit_large_pred_tar2 = vit_large_pred[0].flatten(), vit_large_pred[1].flatten()
     vit_base_pred_tar1, vit_base_pred_tar2 = vit_base_pred[0].flatten(), vit_base_pred[1].flatten()
     open_pose_pred_tar1, open_pose_pred_tar2 = open_pose_pred[0].flatten(), open_pose_pred[1].flatten()
-    gt_tar1, gt_tar2 = gt['target_1'].flatten(), gt['target2_3d'].flatten()
+    gt_tar1, gt_tar2 = gt['target_1'].flatten(), gt['target_2'].flatten()
 
     side_folder_path = os.path.join(subject_folder_path, 'side')
     with open(side_folder_path + '/ViTPose_large/final_target_opt.pickle', 'rb') as f:

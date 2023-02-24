@@ -69,7 +69,7 @@ for SUBJECT_NAME in os.listdir(data_path):
     front_folder_path = subject_folder_path + '/front/'
     with open(front_folder_path + 'two_cam_gt.pickle', 'rb') as f:
         two_cam_gt = pickle.load(f)
-    two_cam_tar1_gt, two_cam_tar2_gt = two_cam_gt['target_1'].flatten(), two_cam_gt['target2_3d'].flatten()
+    two_cam_tar1_gt, two_cam_tar2_gt = two_cam_gt['target_1'].flatten(), two_cam_gt['target_2'].flatten()
     coordinates, normals = two_cam_TSDF(front_folder_path)
 
     # target 1

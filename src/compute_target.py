@@ -16,12 +16,12 @@ parser = argparse.ArgumentParser(description='Compute target')
 parser.add_argument('--pose_model', type=str, default='ViTPose_large', help='pose model')
 parser.add_argument('--subject_name', type=str, default='John Doe', help='subject name')
 parser.add_argument('--scan_pose', type=str, default='none', help='scan pose')
-parser.add_argument('--target1_r1', type=float, default=0, help='target1_r1')
-parser.add_argument('--target1_r2', type=float, default=0, help='target1_r2')
-parser.add_argument('--target2_r1', type=float, default=0, help='target2_r1')
-parser.add_argument('--target2_r2', type=float, default=0, help='target2_r2')
-parser.add_argument('--target4_r1', type=float, default=0, help='target4_r1')
-parser.add_argument('--target4_r2', type=float, default=0, help='target4_r2')
+parser.add_argument('--target1_r1', type=float, default=0.3, help='target1_r1')
+parser.add_argument('--target1_r2', type=float, default=0.1, help='target1_r2')
+parser.add_argument('--target2_r1', type=float, default=0.3, help='target2_r1')
+parser.add_argument('--target2_r2', type=float, default=0.55, help='target2_r2')
+parser.add_argument('--target4_r1', type=float, default=0.35, help='target4_r1')
+parser.add_argument('--target4_r2', type=float, default=0.1, help='target4_r2')
 
 args = parser.parse_args()
 POSE_MODEL = args.pose_model
@@ -32,7 +32,7 @@ if args.scan_pose != 'none':
 
 
 def target12_3D(l_shoulder_cam1, l_shoulder_cam2, r_shoulder_cam1, r_shoulder_cam2,
-               cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=0.3, ratio_2=0.1):
+                cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=0.3, ratio_2=0.1):
     '''
     A 3D method to determine the 1st and 2nd target 3D coordinate. Didn't use nipples.
     :X1, X2 --3D coordinates of the right, left shoulder
@@ -50,7 +50,7 @@ def target12_3D(l_shoulder_cam1, l_shoulder_cam2, r_shoulder_cam1, r_shoulder_ca
     X3 = X1 + ratio_1 * (X2 - X1)
 
     t1 = ((X2 - X1) / np.linalg.norm(X2 - X1)).squeeze()
-    n = np.array([0,0,1])  # z-axis of the base frame / normal vector of the base frame's x-y plane
+    n = np.array([0, 0, 1])  # z-axis of the base frame / normal vector of the base frame's x-y plane
     A = np.vstack([t1, n])
     t2 = null_space(A)  # t2 is perpendicular to both t1 and n
     t2 = t2 / np.linalg.norm(t2)  # normalize t2
@@ -59,7 +59,7 @@ def target12_3D(l_shoulder_cam1, l_shoulder_cam2, r_shoulder_cam1, r_shoulder_ca
         t2 = -t2
 
     target = X3 + ratio_2 * np.linalg.norm(X2 - X1) * t2
-    target = triangulation_post_process(target, verbose=True)
+    target = triangulation_post_process(target, verbose=False)
     position_data['front'] = [X1, X2, t2]
 
     return target
@@ -101,7 +101,7 @@ def target4_3D(r_shoulder_cam1, r_shoulder_cam2, r_hip_cam1, r_hip_cam2,
     X3 = X1 + ratio_1 * (X2 - X1)
 
     t1 = ((X2 - X1) / np.linalg.norm(X2 - X1)).squeeze()
-    n = np.array([0,0,1])
+    n = np.array([0, 0, 1])
     A = np.vstack([t1, n])
     t2 = null_space(A)
     t2 = t2 / np.linalg.norm(t2)
@@ -116,7 +116,7 @@ def target4_3D(r_shoulder_cam1, r_shoulder_cam2, r_hip_cam1, r_hip_cam2,
     return target
 
 
-def draw_front_target_point(target_point1, target_point2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2):
+def draw_front_target_point(target_point1, target_point2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2, target):
     image1 = plt.imread(folder_path + 'color_images/cam_1.jpg')
     cv2.circle(image1, (int(target_point1[0]), int(target_point1[1])), 2, (36, 255, 12), 2, -1)
     cv2.circle(image1, (int(l_shoulder1[0]), int(l_shoulder1[1])), 2, (36, 255, 12), 2, -1)
@@ -139,10 +139,17 @@ def draw_front_target_point(target_point1, target_point2, l_shoulder1, r_shoulde
 
     plt.show()
 
+    if target == 1:
+        plt.imsave(folder_path + 'target1_highlight/cam_1.jpg', image1)
+        plt.imsave(folder_path + 'target1_highlight/cam_2.jpg', image2)
+    else:
+        plt.imsave(folder_path + 'target2_highlight/cam_1.jpg', image1)
+        plt.imsave(folder_path + 'target2_highlight/cam_2.jpg', image2)
+
 
 def draw_side_target_point(target_point1, target_point2, r_hip1, r_shoulder1, r_hip2, r_shoulder2):
     image1 = plt.imread(folder_path + 'color_images/cam_1.jpg')
-    cv2.circle(image1, (int(target_point1[0]), int(target_point1[1])), 2, (36, 255, 12), 2, -1)
+    cv2.circle(image1, (int(target_point1[0]), int(target_point1[1])), 3, (36, 255, 12), 3, -1)
     cv2.circle(image1, (int(r_hip1[0]), int(r_hip1[1])), 2, (36, 255, 12), 2, -1)
     cv2.circle(image1, (int(r_shoulder1[0]), int(r_shoulder1[1])), 2, (36, 255, 12), 2, -1)
     cv2.line(image1, (int(r_hip1[0]), int(r_hip1[1])), (int(r_shoulder1[0]), int(r_shoulder1[1])),
@@ -152,7 +159,7 @@ def draw_side_target_point(target_point1, target_point2, r_hip1, r_shoulder1, r_
     plt.imshow(image1)
 
     image2 = plt.imread(folder_path + 'color_images/cam_2.jpg')
-    cv2.circle(image2, (int(target_point2[0]), int(target_point2[1])), 2, (36, 255, 12), 2, -1)
+    cv2.circle(image2, (int(target_point2[0]), int(target_point2[1])), 3, (36, 255, 12), 3, -1)
     cv2.circle(image2, (int(r_hip2[0]), int(r_hip2[1])), 2, (36, 255, 12), 2, -1)
     cv2.circle(image2, (int(r_shoulder2[0]), int(r_shoulder2[1])), 2, (36, 255, 12), 2, -1)
     cv2.line(image2, (int(r_hip2[0]), int(r_hip2[1])), (int(r_shoulder2[0]), int(r_shoulder2[1])),
@@ -162,28 +169,24 @@ def draw_side_target_point(target_point1, target_point2, r_hip1, r_shoulder1, r_
     plt.imshow(image2)
 
     plt.show()
+    plt.imsave(folder_path + 'target4_highlight/cam_1.jpg', image1)
+    plt.imsave(folder_path + 'target4_highlight/cam_2.jpg', image2)
 
+folder_path = 'src/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'  # when run from src directory
+# folder_path = '../data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'  # when run from evaluation directory
 
-folder_path = 'src/data/' + SUBJECT_NAME + '/' + SCAN_POSE + '/'
-
-# read RGB intrinsics
+# read RGBD intrinsics
 with open(folder_path + 'intrinsics/cam_1_intrinsics.pickle', 'rb') as f:
     cam1_intr = pickle.load(f)
 
 with open(folder_path + 'intrinsics/cam_2_intrinsics.pickle', 'rb') as f:
     cam2_intr = pickle.load(f)
 
-# read depth intrinsics, needed for TSDF volume
-depth_cam1_intr = np.array([
-        [603.98217773, 0, 310.87359619],
-        [0, 603.98217773, 231.11578369],
-        [0, 0, 1]
-    ])
-depth_cam2_intr = np.array([
-        [595.13745117, 0, 318.53710938],
-        [0, 595.13745117, 245.47492981],
-        [0, 0, 1]
-    ])
+with open(folder_path + 'intrinsics/cam_1_depth_intr.pickle', 'rb') as f:
+    depth_cam1_intr = pickle.load(f)
+
+with open(folder_path + 'intrinsics/cam_2_depth_intr.pickle', 'rb') as f:
+    depth_cam2_intr = pickle.load(f)
 
 # read extrinsics
 camera_poses = read_trajectory(folder_path + "odometry.log")
@@ -195,7 +198,7 @@ T_base_cam2 = np.linalg.inv(T_cam2_base)
 # print("T_base_cam2/extr: \n", T_base_cam2)
 
 # read pose keypoints
-with open(folder_path + POSE_MODEL + '/keypoints/cam_1_keypoints.pickle','rb') as f:
+with open(folder_path + POSE_MODEL + '/keypoints/cam_1_keypoints.pickle', 'rb') as f:
     cam1_keypoints = pickle.load(f)
     if POSE_MODEL == "OpenPose":
         l_shoulder1 = np.array(cam1_keypoints['people'][0]['pose_keypoints_2d'][15:17])
@@ -208,8 +211,7 @@ with open(folder_path + POSE_MODEL + '/keypoints/cam_1_keypoints.pickle','rb') a
         l_hip1 = cam1_keypoints[0]['keypoints'][11][:2]
         r_hip1 = cam1_keypoints[0]['keypoints'][12][:2]
 
-
-with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle','rb') as f:
+with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle', 'rb') as f:
     cam2_keypoints = pickle.load(f)
     if POSE_MODEL == "OpenPose":
         l_shoulder2 = np.array(cam2_keypoints['people'][0]['pose_keypoints_2d'][15:17])
@@ -221,7 +223,6 @@ with open(folder_path + POSE_MODEL + '/keypoints/cam_2_keypoints.pickle','rb') a
         r_shoulder2 = cam2_keypoints[0]['keypoints'][6][:2]
         l_hip2 = cam2_keypoints[0]['keypoints'][11][:2]
         r_hip2 = cam2_keypoints[0]['keypoints'][12][:2]
-
 
 ############ TSDF volume ############
 start_time = time.time()
@@ -251,6 +252,8 @@ for i in range(len(camera_poses)):
     else:
         images = np.hstack((color_image, depth_colormap))
 
+    plt.imsave(folder_path + "depth_colormap/cam_{}.png".format(i+1), depth_colormap)
+
     # Show images
     cv2.namedWindow('RealSense', cv2.WINDOW_AUTOSIZE)
     plt.imshow(images)
@@ -276,34 +279,51 @@ print("Volume Integration: {:.3f} s".format(time.time() - start_time))
 # point cloud generation
 pcd = volume.extract_point_cloud()
 downpcd = pcd.voxel_down_sample(voxel_size=0.01)
-# o3d.visualization.draw_geometries([downpcd])
-coordinates = np.asarray(downpcd.points)
+downpcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+o3d.visualization.draw_geometries([downpcd])
 
+coordinates = np.asarray(downpcd.points)
+normals = np.asarray(downpcd.normals)
+
+# save data, write pcd
+o3d.io.write_point_cloud(folder_path + 'downpcd.ply', downpcd)
+with open(folder_path + 'pcd_coordinates.pickle', 'wb') as f:
+    pickle.dump(coordinates, f)
+
+with open(folder_path + 'pcd_normals.pickle', 'wb') as f:
+    pickle.dump(normals, f)
+
+# Read pcd coordianates
+with open(folder_path + 'pcd_coordinates.pickle', 'rb') as f:
+    coordinates = pickle.load(f)
 
 final_target_list = []  # the target coordinates used to navigate the robotic arm
 position_data = {}  # store
 
 if SCAN_POSE == 'front':
     target1 = target12_3D(l_shoulder1, l_shoulder2, r_shoulder1, r_shoulder2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target1_r1, ratio_2=args.target1_r2)
+                          cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target1_r1,
+                          ratio_2=args.target1_r2)
     target2 = target12_3D(l_shoulder1, l_shoulder2, r_shoulder1, r_shoulder2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target2_r1, ratio_2=args.target2_r2)
+                          cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target2_r1,
+                          ratio_2=args.target2_r2)
 
-    target1_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3,:] @ to_homog(target1)).squeeze()
-    target1_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3,:] @ to_homog(target1)).squeeze()
+    target1_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3, :] @ to_homog(target1)).squeeze()
+    target1_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3, :] @ to_homog(target1)).squeeze()
 
     target2_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3, :] @ to_homog(target2)).squeeze()
     target2_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3, :] @ to_homog(target2)).squeeze()
 
-    draw_front_target_point(target1_2d_cam1, target1_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
-    draw_front_target_point(target2_2d_cam1, target2_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2)
+    draw_front_target_point(target1_2d_cam1, target1_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2, target=1)
+    draw_front_target_point(target2_2d_cam1, target2_2d_cam2, l_shoulder1, r_shoulder1, l_shoulder2, r_shoulder2, target=2)
 
     final_target_list.append(target1)
     final_target_list.append(target2)
 
 elif SCAN_POSE == 'side':
     target4 = target4_3D(r_shoulder1, r_shoulder2, r_hip1, r_hip2,
-                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target4_r1, ratio_2=args.target4_r2)
+                         cam1_intr, cam2_intr, T_base_cam1, T_base_cam2, ratio_1=args.target4_r1,
+                         ratio_2=args.target4_r2)
 
     target4_2d_cam1 = from_homog(cam1_intr @ T_base_cam1[0:3, :] @ to_homog(target4)).squeeze()
     target4_2d_cam2 = from_homog(cam2_intr @ T_base_cam2[0:3, :] @ to_homog(target4)).squeeze()
@@ -319,9 +339,13 @@ elif SCAN_POSE == 'side':
 # with open(folder_path + POSE_MODEL + '/position_data.pickle', 'wb') as f:
 #     pickle.dump(position_data, f)
 
-# save results with optimized ratio parameters based on planar euclidean distance
-with open(folder_path + POSE_MODEL + '/final_target_opt.pickle', 'wb') as f:
-    pickle.dump(final_target_list, f)
+# # save results with optimized ratio parameters based on planar euclidean distance
+# with open(folder_path + POSE_MODEL + '/final_target_opt.pickle', 'wb') as f:
+#     pickle.dump(final_target_list, f)
+#
+# with open(folder_path + POSE_MODEL + '/position_data_opt.pickle', 'wb') as f:
+#     pickle.dump(position_data, f)
 
-with open(folder_path + POSE_MODEL + '/position_data_opt.pickle', 'wb') as f:
-    pickle.dump(position_data, f)
+# # save as temporary file for evaluation
+# with open(folder_path + POSE_MODEL + '/tmp_target_test.pickle', 'wb') as f:
+#     pickle.dump(final_target_list, f)
