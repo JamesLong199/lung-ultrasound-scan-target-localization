@@ -39,7 +39,7 @@ Detailed instructions of running the code are included in other `README.md` file
 - To evaluate results, see <a href="https://github.com/JamesLong199/Autonomous-Transducer-Project/tree/main/src/evaluation">`src/evaluation/README.md`</a>.
 
 ## Demo Video 
-https://user-images.githubusercontent.com/66498825/187047342-1848f07d-ceaf-44e0-8098-28f5038e718b.mp4
+https://user-images.githubusercontent.com/60713478/221347137-9e76d059-1eaa-453e-aa6f-1683a4696ee8.mp4
 
 ## Installation
 
